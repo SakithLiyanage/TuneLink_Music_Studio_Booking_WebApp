@@ -23,18 +23,16 @@ const Footer = () => {
   
   return (
     <footer className="relative">
-      
-      
       {/* Decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-primary-600 opacity-5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-600 opacity-5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent-600 opacity-5 rounded-full blur-3xl"></div>
       </div>
       
-      <div className="bg-gradient-to-br from-gray-900 via-gray-900 to-primary-900 text-white pt-28">
-        <div className="container mx-auto px-4 pb-12 relative z-10">
+      <div className="bg-gradient-to-br from-dark via-primary-900 to-accent-900 text-white pt-32">
+        <div className="max-w-7xl mx-auto px-4 pb-12 relative z-10">
           {/* Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12">
             {/* Brand & About */}
             <div className="lg:col-span-5">
               <motion.div
@@ -43,16 +41,16 @@ const Footer = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="bg-gradient-to-br from-primary-500 to-primary-700 w-12 h-12 rounded-xl flex items-center justify-center shadow-lg">
-                    <FiMusic className="text-white text-xl" />
+                <div className="flex items-center space-x-3 mb-8">
+                  <div className="bg-gradient-to-br from-primary-700 via-primary-500 to-accent-400 w-14 h-14 rounded-2xl flex items-center justify-center shadow-glass">
+                    <FiMusic className="text-white text-2xl" />
                   </div>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  <span className="text-3xl font-extrabold bg-gradient-to-r from-white via-primary-100 to-accent-200 bg-clip-text text-transparent tracking-tight">
                     TuneLink
                   </span>
                 </div>
                 
-                <p className="mb-8 text-gray-300 leading-relaxed max-w-lg">
+                <p className="mb-10 text-gray-300 leading-relaxed max-w-lg text-lg font-medium">
                   Connecting musicians and studios across Sri Lanka, making music production and collaboration accessible to everyone. Join our community of creative professionals and take your sound to the next level.
                 </p>
                 
@@ -66,7 +64,7 @@ const Footer = () => {
                     <motion.a
                       key={index}
                       href={social.url}
-                      className={`w-11 h-11 rounded-full bg-gray-800 ${social.color} flex items-center justify-center transition-all duration-300 hover:scale-110`}
+                      className={`w-12 h-12 rounded-xl bg-glass/20 backdrop-blur-xs ${social.color} flex items-center justify-center transition-all duration-300 hover:scale-110 border border-white/10 shadow-glass`}
                       whileHover={{ y: -3 }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -85,19 +83,19 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <h3 className="text-xl font-semibold mb-6 relative">
+              <h3 className="text-2xl font-bold mb-8 relative">
                 Quick Links
-                <span className="absolute -bottom-2 left-0 h-1 w-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full"></span>
+                <span className="absolute -bottom-2 left-0 h-1 w-16 bg-gradient-to-r from-primary-500 to-accent-400 rounded-full"></span>
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {quickLinks.map((link, index) => (
                   <li key={index}>
                     <Link 
                       to={link.path} 
-                      className="text-gray-300 hover:text-white transition-colors flex items-center group"
+                      className="text-gray-300 hover:text-white transition-colors flex items-center group font-medium text-lg"
                     >
                       <motion.span
-                        className="mr-2 opacity-0 group-hover:opacity-100"
+                        className="mr-3 opacity-0 group-hover:opacity-100"
                         animate={{ x: [-5, 0] }}
                         transition={{ duration: 0.3 }}
                       >
@@ -118,19 +116,19 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <h3 className="text-xl font-semibold mb-6 relative">
+              <h3 className="text-2xl font-bold mb-8 relative">
                 Resources
-                <span className="absolute -bottom-2 left-0 h-1 w-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full"></span>
+                <span className="absolute -bottom-2 left-0 h-1 w-16 bg-gradient-to-r from-primary-500 to-accent-400 rounded-full"></span>
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {resourceLinks.map((link, index) => (
                   <li key={index}>
                     <Link 
                       to={link.path} 
-                      className="text-gray-300 hover:text-white transition-colors flex items-center group"
+                      className="text-gray-300 hover:text-white transition-colors flex items-center group font-medium text-lg"
                     >
                       <motion.span
-                        className="mr-2 opacity-0 group-hover:opacity-100"
+                        className="mr-3 opacity-0 group-hover:opacity-100"
                         animate={{ x: [-5, 0] }}
                         transition={{ duration: 0.3 }}
                       >
@@ -151,69 +149,53 @@ const Footer = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <h3 className="text-xl font-semibold mb-6 relative">
+              <h3 className="text-2xl font-bold mb-8 relative">
                 Contact Us
-                <span className="absolute -bottom-2 left-0 h-1 w-12 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full"></span>
+                <span className="absolute -bottom-2 left-0 h-1 w-16 bg-gradient-to-r from-primary-500 to-accent-400 rounded-full"></span>
               </h3>
               
-              <ul className="space-y-4 mb-8">
+              <ul className="space-y-5 mb-10">
                 <li className="flex items-start text-gray-300 group">
-                  <div className="mr-3 mt-1 p-2 bg-gray-800 group-hover:bg-primary-700 rounded-lg transition-colors">
-                    <FiMapPin className="text-primary-400 group-hover:text-white" />
+                  <div className="mr-4 mt-1 p-3 bg-glass/20 group-hover:bg-primary-700 rounded-xl transition-colors backdrop-blur-xs border border-white/10">
+                    <FiMapPin className="text-primary-400 group-hover:text-white text-lg" />
                   </div>
-                  <span className="group-hover:text-white transition-colors">123 Music Street, Colombo, Sri Lanka</span>
+                  <span className="group-hover:text-white transition-colors font-medium">123 Music Street, Colombo, Sri Lanka</span>
                 </li>
                 <li className="flex items-center text-gray-300 group">
-                  <div className="mr-3 p-2 bg-gray-800 group-hover:bg-primary-700 rounded-lg transition-colors">
-                    <FiPhone className="text-primary-400 group-hover:text-white" />
+                  <div className="mr-4 p-3 bg-glass/20 group-hover:bg-primary-700 rounded-xl transition-colors backdrop-blur-xs border border-white/10">
+                    <FiPhone className="text-primary-400 group-hover:text-white text-lg" />
                   </div>
-                  <span className="group-hover:text-white transition-colors">+94 11 234 5678</span>
+                  <span className="group-hover:text-white transition-colors font-medium">+94 11 234 5678</span>
                 </li>
                 <li className="flex items-center text-gray-300 group">
-                  <div className="mr-3 p-2 bg-gray-800 group-hover:bg-primary-700 rounded-lg transition-colors">
-                    <FiMail className="text-primary-400 group-hover:text-white" />
+                  <div className="mr-4 p-3 bg-glass/20 group-hover:bg-primary-700 rounded-xl transition-colors backdrop-blur-xs border border-white/10">
+                    <FiMail className="text-primary-400 group-hover:text-white text-lg" />
                   </div>
-                  <span className="group-hover:text-white transition-colors">info@tunelink.lk</span>
+                  <span className="group-hover:text-white transition-colors font-medium">info@tunelink.lk</span>
                 </li>
                 <li className="flex items-center text-gray-300 group">
-                  <div className="mr-3 p-2 bg-gray-800 group-hover:bg-primary-700 rounded-lg transition-colors">
-                    <FiGlobe className="text-primary-400 group-hover:text-white" />
+                  <div className="mr-4 p-3 bg-glass/20 group-hover:bg-primary-700 rounded-xl transition-colors backdrop-blur-xs border border-white/10">
+                    <FiGlobe className="text-primary-400 group-hover:text-white text-lg" />
                   </div>
-                  <span className="group-hover:text-white transition-colors">www.tunelink.lk</span>
+                  <span className="group-hover:text-white transition-colors font-medium">www.tunelink.lk</span>
                 </li>
               </ul>
 
               {/* Newsletter */}
               <div>
-                <h4 className="font-medium text-lg mb-4 text-white">Get updates</h4>
+                <h4 className="font-bold text-xl mb-5 text-white">Get updates</h4>
                 <div className="flex">
                   <input 
                     type="email" 
                     placeholder="Your email" 
-                    className="bg-gray-800 border border-gray-700 rounded-l-lg px-4 py-3 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    className="bg-glass/20 border border-white/20 rounded-l-xl px-5 py-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent backdrop-blur-xs text-white placeholder-gray-400 font-medium"
                   />
-                  <button className="bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 px-5 rounded-r-lg transition-all flex items-center justify-center group">
-                    <FiArrowRight className="group-hover:translate-x-1 transition-transform" />
+                  <button className="bg-gradient-to-r from-primary-700 to-accent-400 hover:from-primary-800 hover:to-accent-500 px-6 rounded-r-xl transition-all flex items-center justify-center group shadow-glass">
+                    <FiArrowRight className="group-hover:translate-x-1 transition-transform text-xl" />
                   </button>
                 </div>
               </div>
             </motion.div>
-          </div>
-          
-          {/* Bottom Bar */}
-          <div className="border-t border-gray-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-gray-400">
-            <p>© {new Date().getFullYear()} TuneLink Sri Lanka. All rights reserved.</p>
-            <div className="mt-4 md:mt-0 flex space-x-6">
-              <Link to="/privacy" className="hover:text-primary-400 transition-colors text-sm">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="hover:text-primary-400 transition-colors text-sm">
-                Terms of Service
-              </Link>
-              <Link to="/cookies" className="hover:text-primary-400 transition-colors text-sm">
-                Cookie Policy
-              </Link>
-            </div>
           </div>
         </div>
       </div>

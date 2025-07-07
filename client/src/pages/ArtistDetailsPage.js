@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   FiMusic, FiCalendar, FiStar, FiMapPin, FiCheckCircle,
-  FiHeart, FiShare2, FiPlayCircle, FiHeadphones, FiMic
+  FiHeart, FiShare2, FiPlayCircle, FiHeadphones, FiMic, FiArrowLeft
 } from 'react-icons/fi';
 
 import BookingCalendar from '../components/booking/BookingCalendar';
@@ -235,93 +235,102 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
   }
 
   return (
-    <div className="pt-24 pb-16 bg-background">
-      <div className="container mx-auto px-4">
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Back button */}
+        <Link 
+          to="/artists" 
+          className="inline-flex items-center text-primary-700 font-bold mb-8 group text-lg hover:underline hover:text-accent-600 transition-all"
+        >
+          <FiArrowLeft className="mr-3 group-hover:-translate-x-1 transition-transform text-xl" /> 
+          Back to Artists
+        </Link>
+
         {/* Artist Header */}
         <div className="mb-8">
-          <div className="flex justify-between items-start">
-            <div className="flex">
-              <div className="mr-4">
-                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
-                  <img 
-                    src={artist.user.avatar} 
-                    alt={artist.user.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
+          <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+            <div className="flex items-start gap-6">
+              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-glass">
+                <img 
+                  src={artist.user.avatar} 
+                  alt={artist.user.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
-                <h1 className="text-3xl md:text-4xl font-bold">{artist.user.name}</h1>
-                <div className="flex items-center mt-2 text-gray-600">
-                  <FiMapPin className="mr-1" />
-                  <span>{artist.location.city}</span>
+                <h1 className="text-4xl md:text-5xl font-extrabold text-primary-700 mb-2">{artist.user.name}</h1>
+                <div className="flex items-center mb-3 text-dark/60">
+                  <FiMapPin className="mr-2 text-primary-500" />
+                  <span className="font-medium">{artist.location.city}</span>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 mt-2">
+                <div className="flex flex-wrap items-center gap-2">
                   {artist.instruments.slice(0, 3).map((instrument, idx) => (
-                    <span key={idx} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                      <FiMusic className="mr-1" size={12} />
+                    <span key={idx} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-primary-50/80 text-primary-700 border border-primary-100">
+                      <FiMusic className="mr-2" size={14} />
                       {instrument}
                     </span>
                   ))}
                   {artist.instruments.length > 3 && (
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-gray-50/80 text-gray-700 border border-gray-200">
                       +{artist.instruments.length - 3} more
                     </span>
                   )}
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <motion.button 
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                  isLiked ? 'bg-red-50 text-red-500' : 'bg-gray-100 text-gray-500'
+                className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-glass border border-primary-100 ${
+                  isLiked ? 'bg-red-50 text-red-500' : 'bg-white/80 text-gray-500'
                 }`}
                 onClick={toggleLike}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiHeart className={isLiked ? 'fill-red-500' : ''} />
+                <FiHeart className={isLiked ? 'fill-red-500' : ''} size={20} />
               </motion.button>
               <motion.button 
-                className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500"
+                className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center text-gray-500 shadow-glass border border-primary-100"
                 onClick={shareArtist}
                 whileTap={{ scale: 0.9 }}
               >
-                <FiShare2 />
+                <FiShare2 size={20} />
               </motion.button>
             </div>
           </div>
-          <div className="flex items-center mt-3">
+          <div className="flex items-center mt-4">
             <div className="flex items-center text-amber-500">
-              <FiStar className="fill-current mr-1" />
-              <span className="font-medium">{artist.averageRating}</span>
+              <FiStar className="fill-current mr-2" size={20} />
+              <span className="font-bold text-lg">{artist.averageRating}</span>
             </div>
-            <span className="mx-2 text-gray-400">•</span>
-            <span className="text-gray-600">{artist.reviewCount} reviews</span>
+            <span className="mx-3 text-gray-400">•</span>
+            <span className="text-dark/60 font-medium">{artist.reviewCount} reviews</span>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="border-b border-gray-200 mb-8">
-          <nav className="flex space-x-8 overflow-x-auto">
-            {['overview', 'music', 'reviews', 'booking'].map((section) => (
-              <button
-                key={section}
-                onClick={() => handleSectionChange(section)}
-                className={`pb-4 px-1 border-b-2 font-medium transition-colors capitalize whitespace-nowrap ${
-                  activeSection === section
-                    ? 'border-primary-600 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
-              >
-                {section}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        {/* Content sections */}
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Content */}
           <div className="lg:col-span-2">
+            {/* Navigation Tabs */}
+            <div className="bg-glass/80 rounded-2xl p-1 mb-8 border border-primary-100">
+              <nav className="flex space-x-1">
+                {['overview', 'music', 'reviews', 'booking'].map((section) => (
+                  <button
+                    key={section}
+                    onClick={() => handleSectionChange(section)}
+                    className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 capitalize ${
+                      activeSection === section
+                        ? 'bg-primary-700 text-white shadow-glass'
+                        : 'text-dark/70 hover:text-primary-700 hover:bg-white/50'
+                    }`}
+                  >
+                    {section}
+                  </button>
+                ))}
+              </nav>
+            </div>
+
+            {/* Content sections */}
             <AnimatePresence mode="wait">
               {activeSection === 'overview' && (
                 <motion.div 
@@ -332,52 +341,52 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                   transition={{ duration: 0.3 }}
                   className="space-y-8"
                 >
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">About {artist.user.name}</h2>
-                    <div className="prose prose-lg max-w-none text-gray-700">
-                      <p>{artist.longDescription}</p>
+                  <div className="bg-glass/80 rounded-3xl p-8 border border-primary-100">
+                    <h2 className="text-3xl font-bold mb-6 text-primary-700">About {artist.user.name}</h2>
+                    <div className="prose prose-lg max-w-none text-dark/70">
+                      <p className="text-lg leading-relaxed">{artist.longDescription}</p>
                     </div>
                   </div>
                   
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Experience</h2>
+                  <div className="bg-glass/80 rounded-3xl p-8 border border-primary-100">
+                    <h2 className="text-3xl font-bold mb-6 text-primary-700">Experience</h2>
                     <div className="space-y-4">
                       {artist.experience.map((exp, index) => (
-                        <div key={index} className="bg-gray-50 rounded-lg p-4">
-                          <div className="flex justify-between">
-                            <h3 className="font-medium text-lg">{exp.title}</h3>
-                            <span className="text-primary-600 font-medium">{exp.years}</span>
+                        <div key={index} className="bg-white/80 rounded-2xl p-6 border border-primary-50">
+                          <div className="flex justify-between items-start mb-3">
+                            <h3 className="font-bold text-lg text-primary-700">{exp.title}</h3>
+                            <span className="text-accent-600 font-semibold bg-accent-50 px-3 py-1 rounded-full text-sm">{exp.years}</span>
                           </div>
-                          <p className="text-gray-600">{exp.description}</p>
+                          <p className="text-dark/70">{exp.description}</p>
                         </div>
                       ))}
                     </div>
                   </div>
                   
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Services</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3">
+                  <div className="bg-glass/80 rounded-3xl p-8 border border-primary-100">
+                    <h2 className="text-3xl font-bold mb-6 text-primary-700">Services</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {artist.services.map((service, index) => (
-                        <div key={index} className="flex items-center">
-                          <FiCheckCircle className="mr-2 text-accent-500" />
-                          <span>{service}</span>
+                        <div key={index} className="flex items-center bg-white/80 rounded-xl p-4 border border-primary-50">
+                          <FiCheckCircle className="mr-3 text-accent-500" size={20} />
+                          <span className="font-semibold text-dark">{service}</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Images</h2>
-                    <div className="aspect-video md:aspect-auto md:h-80 w-full">
+                  <div className="bg-glass/80 rounded-3xl p-8 border border-primary-100">
+                    <h2 className="text-3xl font-bold mb-6 text-primary-700">Images</h2>
+                    <div className="aspect-video md:aspect-auto md:h-80 w-full rounded-2xl overflow-hidden">
                       <ImageGallery images={artist.images} />
                     </div>
                   </div>
                   
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-4">Genres</h2>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="bg-glass/80 rounded-3xl p-8 border border-primary-100">
+                    <h2 className="text-3xl font-bold mb-6 text-primary-700">Genres</h2>
+                    <div className="flex flex-wrap gap-3">
                       {artist.genres.map((genre, index) => (
-                        <span key={index} className="px-4 py-2 bg-primary-50 text-primary-600 rounded-full text-sm">
+                        <span key={index} className="px-4 py-2 bg-primary-50/80 text-primary-700 rounded-full text-sm font-semibold border border-primary-100">
                           {genre}
                         </span>
                       ))}
@@ -393,10 +402,10 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="space-y-8"
+                  className="bg-glass/80 rounded-3xl p-8 border border-primary-100"
                 >
-                  <h2 className="text-2xl font-semibold mb-4">Audio Samples</h2>
-                  <div className="space-y-4">
+                  <h2 className="text-3xl font-bold mb-6 text-primary-700">Audio Samples</h2>
+                  <div className="space-y-6">
                     {artist.audioSamples.map((sample) => (
                       <AudioSamplePlayer key={sample.id} sample={sample} />
                     ))}
@@ -411,6 +420,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
+                  className="bg-glass/80 rounded-3xl p-8 border border-primary-100"
                 >
                   <ReviewSection 
                     reviews={artist.reviews} 
@@ -429,9 +439,9 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.3 }}
-                  className="md:hidden" // Only show on mobile, desktop has sidebar
+                  className="lg:hidden bg-glass/80 rounded-3xl p-8 border border-primary-100"
                 >
-                  <h2 className="text-2xl font-semibold mb-4">Book {artist.user.name}</h2>
+                  <h2 className="text-3xl font-bold mb-6 text-primary-700">Book {artist.user.name}</h2>
                   <BookingCalendar
                     entityId={artist._id}
                     entityType="artist"
@@ -444,19 +454,19 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
             </AnimatePresence>
           </div>
           
-          {/* Sticky Booking Widget */}
-          <div className="lg:relative lg:block">
+          {/* Right Column - Sticky Booking Widget */}
+          <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-28">
               {activeSection !== 'booking' && (
-                <div className="bg-white rounded-2xl shadow-soft p-6 border border-gray-200">
-                  <div className="flex justify-between items-center mb-4">
-                    <div className="flex items-center text-2xl font-bold text-primary-600">
-                      <span>Rs. {artist.hourlyRate.toLocaleString()}</span>
-                      <span className="text-gray-500 text-base font-normal">/hour</span>
+                <div className="bg-glass/80 rounded-3xl shadow-glass p-8 border border-primary-100 backdrop-blur-xs">
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center">
+                      <span className="text-3xl font-extrabold text-primary-700">Rs. {artist.hourlyRate.toLocaleString()}</span>
+                      <span className="text-dark/60 text-lg font-medium ml-2">/hour</span>
                     </div>
                     <div className="flex items-center text-amber-500">
-                      <FiStar className="mr-1 fill-current" />
-                      <span className="font-medium">{artist.averageRating}</span>
+                      <FiStar className="mr-2 fill-current" size={20} />
+                      <span className="font-bold text-lg">{artist.averageRating}</span>
                     </div>
                   </div>
                   
@@ -475,9 +485,8 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
 
         {/* Similar Artists */}
         <div className="mt-16">
-          <h2 className="text-2xl font-semibold mb-6">Similar Artists</h2>
+          <h2 className="text-3xl font-bold mb-8 text-primary-700">Similar Artists</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Here we could map through related artists */}
             {[1, 2, 3].map((index) => (
               <ArtistCard key={index} artist={{
                 _id: `sim${index}`,

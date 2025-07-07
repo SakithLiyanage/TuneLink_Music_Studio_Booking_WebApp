@@ -94,45 +94,40 @@ const ArtistsPage = () => {
   });
 
   return (
-    <div className="pt-24 pb-16 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Artists</h1>
-          <p className="text-gray-600">Connect with talented musicians and producers across Sri Lanka</p>
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="mb-12">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 bg-clip-text text-transparent drop-shadow">Artists</h1>
+          <p className="text-xl text-dark/70 font-medium">Connect with talented musicians and producers across Sri Lanka</p>
         </div>
-        
         {/* Search and Filter Bar */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-8">
+        <div className="bg-glass/80 rounded-3xl shadow-glass p-6 mb-12 border border-primary-50 backdrop-blur-xs">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-grow">
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FiSearch className="text-gray-500" />
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary-500">
+                  <FiSearch className="text-xl" />
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500"
+                  className="block w-full pl-12 pr-4 py-4 bg-white/80 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent backdrop-blur-xs font-medium text-dark placeholder-gray-500"
                   placeholder="Search by artist name"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
             </div>
-            
             <div className="flex gap-2">
               <button
-                className="flex items-center px-4 py-2 bg-primary-50 text-primary-600 rounded-lg hover:bg-primary-100 transition-colors"
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-xl font-bold text-lg shadow hover:scale-105 hover:shadow-2xl transition-all duration-200"
                 onClick={() => setFiltersOpen(!filtersOpen)}
               >
                 <FiFilter className="mr-2" />
                 Filters
                 <FiChevronDown className={`ml-2 transition-transform ${filtersOpen ? 'rotate-180' : ''}`} />
               </button>
-              
-              {/* Additional filter buttons could go here */}
             </div>
           </div>
-          
           {/* Expandable filters */}
           {filtersOpen && (
             <motion.div
@@ -140,21 +135,20 @@ const ArtistsPage = () => {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="mt-4 pt-4 border-t"
+              className="mt-6 pt-6 border-t border-primary-50"
             >
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Genre filter */}
                 <div>
-                  <h3 className="font-medium mb-2">Genre</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="font-bold mb-3 text-lg text-primary-700">Genre</h3>
+                  <div className="flex flex-wrap gap-3">
                     {genres.map((genre) => (
                       <button
                         key={genre}
-                        className={`px-3 py-1 rounded-full text-sm ${
+                        className={`px-4 py-2 rounded-full text-base font-semibold shadow-inner border border-primary-100 transition-all duration-200 ${
                           selectedGenres.includes(genre)
-                            ? 'bg-primary-600 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        } transition-colors`}
+                            ? 'bg-primary-700 text-white shadow-glass' : 'bg-primary-50/80 text-primary-700 hover:bg-primary-100'
+                        }`}
                         onClick={() => toggleGenre(genre)}
                       >
                         {genre}
@@ -162,19 +156,17 @@ const ArtistsPage = () => {
                     ))}
                   </div>
                 </div>
-                
                 {/* Instrument filter */}
                 <div>
-                  <h3 className="font-medium mb-2">Instrument</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="font-bold mb-3 text-lg text-primary-700">Instrument</h3>
+                  <div className="flex flex-wrap gap-3">
                     {instruments.map((instrument) => (
                       <button
                         key={instrument}
-                        className={`px-3 py-1 rounded-full text-sm ${
+                        className={`px-4 py-2 rounded-full text-base font-semibold shadow-inner border border-accent-100 transition-all duration-200 ${
                           selectedInstruments.includes(instrument)
-                            ? 'bg-secondary-500 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        } transition-colors`}
+                            ? 'bg-accent-600 text-white shadow-glass' : 'bg-accent-50/80 text-accent-700 hover:bg-accent-100'
+                        }`}
                         onClick={() => toggleInstrument(instrument)}
                       >
                         {instrument}
@@ -182,70 +174,46 @@ const ArtistsPage = () => {
                     ))}
                   </div>
                 </div>
-                
                 {/* Rating filter */}
                 <div>
-                  <h3 className="font-medium mb-2">Minimum Rating</h3>
+                  <h3 className="font-bold mb-3 text-lg text-primary-700">Minimum Rating</h3>
                   <div className="flex items-center space-x-4">
                     {[0, 3, 4, 4.5].map((rating) => (
                       <button
                         key={rating}
-                        className={`flex items-center px-3 py-1 rounded-full text-sm ${
+                        className={`flex items-center px-4 py-2 rounded-full text-base font-semibold shadow-inner border border-amber-200 transition-all duration-200 ${
                           ratingFilter === rating
-                            ? 'bg-amber-500 text-white'
-                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        } transition-colors`}
+                            ? 'bg-amber-500 text-white shadow-glass' : 'bg-amber-50/80 text-amber-700 hover:bg-amber-100'
+                        }`}
                         onClick={() => setRatingFilter(rating)}
                       >
                         {rating > 0 && (
-                          <>
-                            <FiStar className="mr-1 fill-current" />
-                            {rating}+
-                          </>
+                          <FiStar className="mr-2" />
                         )}
-                        {rating === 0 && 'Any rating'}
+                        {rating === 0 ? 'Any' : rating + '+'}
                       </button>
                     ))}
                   </div>
                 </div>
               </div>
-              
-              <div className="mt-4 flex justify-end">
-                <button
-                  className="text-primary-600 hover:text-primary-700 font-medium"
-                  onClick={() => {
-                    setSelectedGenres([]);
-                    setSelectedInstruments([]);
-                    setRatingFilter(0);
-                    setSearchTerm('');
-                  }}
-                >
-                  Reset filters
-                </button>
-              </div>
             </motion.div>
           )}
         </div>
-        
         {/* Artists Grid */}
         {loading ? (
-          <LoadingSpinner />
+          <div className="flex justify-center items-center min-h-[300px]">
+            <LoadingSpinner />
+          </div>
+        ) : filteredArtists.length === 0 ? (
+          <div className="text-center py-20 text-2xl text-dark/60 font-semibold">
+            No artists found matching your criteria.
+          </div>
         ) : (
-          <>
-            {filteredArtists.length === 0 ? (
-              <div className="text-center py-12">
-                <FiMusic className="mx-auto text-6xl text-gray-300 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">No artists found</h3>
-                <p className="text-gray-500">Try adjusting your filters or search term</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredArtists.map((artist, index) => (
-                  <ArtistCard key={artist._id} artist={artist} index={index} />
-                ))}
-              </div>
-            )}
-          </>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {filteredArtists.map((artist) => (
+              <ArtistCard key={artist._id} artist={artist} />
+            ))}
+          </div>
         )}
       </div>
     </div>

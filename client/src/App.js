@@ -39,10 +39,11 @@ import StudioAvailability from './dashboard/studio/StudioAvailability';
 
 // Dashboard pages - Admin
 import AdminDashboard from './dashboard/admin/AdminDashboard';
-import AdminUsers from './dashboard/admin/AdminUsers';
-import AdminStudios from './dashboard/admin/AdminStudios';
-import AdminArtists from './dashboard/admin/AdminArtists';
-import AdminBookings from './dashboard/admin/AdminBookings';
+// import AdminUsers from './dashboard/admin/AdminUsers';
+// import AdminStudios from './dashboard/admin/AdminStudios';
+// import AdminArtists from './dashboard/admin/AdminArtists';
+// import AdminBookings from './dashboard/admin/AdminBookings';
+// import AdminReviews from './dashboard/admin/AdminReviews';
 
 // Auth provider for context
 import { AuthProvider } from './contexts/AuthContext';
@@ -111,10 +112,11 @@ function App() {
             </ProtectedRoute>
           }>
             <Route index element={<AdminDashboard />} />
-            <Route path="users" element={<AdminUsers />} />
+            {/* <Route path="users" element={<AdminUsers />} />
             <Route path="studios" element={<AdminStudios />} />
             <Route path="artists" element={<AdminArtists />} />
             <Route path="bookings" element={<AdminBookings />} />
+            <Route path="reviews" element={<AdminReviews />} /> */}
           </Route>
         </Routes>
       </Router>

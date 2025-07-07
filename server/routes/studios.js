@@ -5,25 +5,44 @@ const {
   createStudio,
   updateStudio,
   deleteStudio,
-  getStudiosByCity,
-  updateAvailability,
-  addRating,
-  uploadStudioImages
+  uploadStudioImages,
+  addStudioRating,
+  getFeaturedStudios,
+  searchStudios,
+  updateStudioAvailability,
+  adminVerifyStudio,
+  adminDeactivateStudio,
+  adminFeatureStudio,
+  getStudioStats,
+  getAllStudioReviews,
+  deleteStudioReview
 } = require('../controllers/studios');
 
-const router = express.Router();
+const { protect, authorize, checkOwnership } = require('../middleware/auth');
 
-const { protect, authorize } = require('../middleware/auth');
+const router = express.Router();
 
 // Public routes
 router.route('/')
   .get(getStudios);
 
+router.route('/featured')
+  .get(getFeaturedStudios);
+
+router.route('/search')
+  .get(searchStudios);
+
+router.route('/admin/stats')
+  .get(protect, authorize('admin'), getStudioStats);
+
+router.route('/admin/reviews')
+  .get(protect, authorize('admin'), getAllStudioReviews);
+
+router.route('/:studioId/reviews/:reviewId')
+  .delete(protect, authorize('admin'), deleteStudioReview);
+
 router.route('/:id')
   .get(getStudio);
-
-router.route('/city/:city')
-  .get(getStudiosByCity);
 
 // Protected routes
 router.use(protect);
@@ -32,16 +51,26 @@ router.route('/')
   .post(authorize('studio'), createStudio);
 
 router.route('/:id')
-  .put(authorize('studio', 'admin'), updateStudio)
-  .delete(authorize('studio', 'admin'), deleteStudio);
-
-router.route('/:id/availability')
-  .put(authorize('studio'), updateAvailability);
-
-router.route('/:id/ratings')
-  .post(authorize('client'), addRating);
+  .put(checkOwnership('Studio'), updateStudio)
+  .delete(checkOwnership('Studio'), deleteStudio);
 
 router.route('/:id/images')
-  .post(authorize('studio'), uploadStudioImages);
+  .put(checkOwnership('Studio'), uploadStudioImages);
+
+router.route('/:id/ratings')
+  .post(authorize('client', 'admin'), addStudioRating);
+
+router.route('/:id/availability')
+  .put(checkOwnership('Studio'), updateStudioAvailability);
+
+// Admin routes
+router.route('/:id/verify')
+  .put(authorize('admin'), adminVerifyStudio);
+
+router.route('/:id/active')
+  .put(authorize('admin'), adminDeactivateStudio);
+
+router.route('/:id/feature')
+  .put(authorize('admin'), adminFeatureStudio);
 
 module.exports = router;

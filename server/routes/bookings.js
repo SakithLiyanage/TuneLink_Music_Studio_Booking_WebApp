@@ -5,56 +5,50 @@ const {
   createBooking,
   updateBooking,
   deleteBooking,
+  updateBookingStatus,
   getMyBookings,
-  getClientBookings,
   getArtistBookings,
   getStudioBookings,
-  updateBookingStatus,
-  updatePaymentStatus
+  adminUpdateBookingStatus,
+  adminRefundBooking,
+  getBookingStats
 } = require('../controllers/bookings');
 
-const router = express.Router();
+const { protect, authorize, checkOwnership } = require('../middleware/auth');
 
-const { protect, authorize } = require('../middleware/auth');
+const router = express.Router();
 
 // All routes are protected
 router.use(protect);
 
-// General booking routes
-router.route('/:id')
-  .get(getBooking);
-
-// Client routes
 router.route('/')
+  .get(authorize('admin'), getBookings)
   .post(authorize('client'), createBooking);
 
 router.route('/me')
   .get(getMyBookings);
 
-router.route('/client')
-  .get(authorize('client'), getClientBookings);
-
-// Artist routes
 router.route('/artist')
   .get(authorize('artist'), getArtistBookings);
 
-// Studio routes
 router.route('/studio')
   .get(authorize('studio'), getStudioBookings);
 
-// Status update routes
+router.route('/admin/stats')
+  .get(authorize('admin'), getBookingStats);
+
+router.route('/:id')
+  .get(checkOwnership('Booking'), getBooking)
+  .put(checkOwnership('Booking'), updateBooking)
+  .delete(checkOwnership('Booking'), deleteBooking);
+
 router.route('/:id/status')
   .put(authorize('artist', 'studio', 'admin'), updateBookingStatus);
 
-router.route('/:id/payment')
-  .put(authorize('client', 'admin'), updatePaymentStatus);
+router.route('/:id/adminstatus')
+  .put(authorize('admin'), adminUpdateBookingStatus);
 
-// Admin routes
-router.route('/')
-  .get(authorize('admin'), getBookings);
-
-router.route('/:id')
-  .put(authorize('admin'), updateBooking)
-  .delete(authorize('admin'), deleteBooking);
+router.route('/:id/refund')
+  .put(authorize('admin'), adminRefundBooking);
 
 module.exports = router;

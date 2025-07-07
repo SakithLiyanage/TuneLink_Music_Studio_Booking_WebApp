@@ -156,52 +156,52 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="overflow-hidden bg-background">
+    <div className="overflow-hidden bg-gradient-to-br from-primary-50 via-accent-100 to-light">
       {/* Hero Section */}
       <HeroSection />
 
       {/* Stats Section with Animated Counters */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-glass/80 relative overflow-hidden backdrop-blur-xs">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
-              className="bg-primary-600 text-white rounded-lg p-6 shadow-md"
+              className="bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl p-8 shadow-glass border border-primary-100"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
             >
-              <div className="text-3xl font-bold">
+              <div className="text-4xl font-extrabold">
                 <AnimatedCounter end={500} duration={2} />
               </div>
-              <div className="text-sm mt-2">
+              <div className="text-lg font-semibold mt-3">
                 Artists Registered
               </div>
             </motion.div>
             
             <motion.div 
-              className="bg-primary-600 text-white rounded-lg p-6 shadow-md"
+              className="bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl p-8 shadow-glass border border-primary-100"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              <div className="text-3xl font-bold">
+              <div className="text-4xl font-extrabold">
                 <AnimatedCounter end={150} duration={2} />
               </div>
-              <div className="text-sm mt-2">
+              <div className="text-lg font-semibold mt-3">
                 Studios Available
               </div>
             </motion.div>
             
             <motion.div 
-              className="bg-primary-600 text-white rounded-lg p-6 shadow-md"
+              className="bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl p-8 shadow-glass border border-primary-100"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="text-3xl font-bold">
-                <AnimatedCounter end={1200} duration={2} />
+              <div className="text-4xl font-extrabold">
+                <AnimatedCounter end={1000} duration={2} />
               </div>
-              <div className="text-sm mt-2">
+              <div className="text-lg font-semibold mt-3">
                 Successful Bookings
               </div>
             </motion.div>

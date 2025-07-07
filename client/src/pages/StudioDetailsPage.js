@@ -168,22 +168,21 @@ const StudioDetailsPage = () => {
   }
 
   return (
-    <div className="pt-28 pb-16 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Back button */}
         <Link 
           to="/studios" 
-          className="inline-flex items-center text-primary-600 mb-6 group"
+          className="inline-flex items-center text-primary-700 font-bold mb-8 group text-lg hover:underline hover:text-accent-600 transition-all"
         >
-          <FiArrowLeft className="mr-2 group-hover:-translate-x-1 transition-transform" /> 
+          <FiArrowLeft className="mr-3 group-hover:-translate-x-1 transition-transform text-xl" /> 
           Back to Studios
         </Link>
-
         {/* Studio Gallery */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <div className="space-y-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12">
+          <div className="space-y-4">
             <motion.div
-              className="relative aspect-[4/3] overflow-hidden rounded-2xl"
+              className="relative aspect-[4/3] overflow-hidden rounded-3xl shadow-glass border border-primary-100 bg-glass/80 backdrop-blur-xs"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
@@ -193,11 +192,11 @@ const StudioDetailsPage = () => {
                 alt={studio.name} 
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
-                <p className="text-white">{studio.images[selectedImage].caption}</p>
+              <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/70 to-transparent rounded-b-3xl">
+                <p className="text-white font-medium text-lg">{studio.images[selectedImage].caption}</p>
               </div>
             </motion.div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-4 gap-3">
               {studio.images.map((image, index) => (
                 <div 
                   key={index}

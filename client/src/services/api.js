@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: '/api'
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  timeout: 10000
 });
 
 // Add JWT token to headers if available
@@ -16,7 +17,7 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-// Handle token expiration
+// Handle token expiration and errors
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -31,6 +32,17 @@ api.interceptors.response.use(
   }
 );
 
+// Auth API
+export const authAPI = {
+  register: (userData) => api.post('/auth/register', userData),
+  login: (credentials) => api.post('/auth/login', credentials),
+  getMe: () => api.get('/auth/me'),
+  updateDetails: (userData) => api.put('/auth/updatedetails', userData),
+  updatePassword: (passwordData) => api.put('/auth/updatepassword', passwordData),
+  forgotPassword: (email) => api.post('/auth/forgotpassword', { email }),
+  resetPassword: (token, password) => api.put(`/auth/resetpassword/${token}`, { password })
+};
+
 // Artists API
 export const artistsAPI = {
   getAll: (params) => api.get('/artists', { params }),
@@ -39,10 +51,19 @@ export const artistsAPI = {
   update: (id, artistData) => api.put(`/artists/${id}`, artistData),
   delete: (id) => api.delete(`/artists/${id}`),
   updateAvailability: (id, availabilityData) => api.put(`/artists/${id}/availability`, availabilityData),
-  uploadMedia: (id, formData) => api.post(`/artists/${id}/media`, formData, {
+  uploadMedia: (id, formData) => api.put(`/artists/${id}/media`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
-  addRating: (id, ratingData) => api.post(`/artists/${id}/ratings`, ratingData)
+  addRating: (id, ratingData) => api.post(`/artists/${id}/ratings`, ratingData),
+  getFeatured: () => api.get('/artists/featured'),
+  search: (query) => api.get('/artists/search', { params: { q: query } }),
+  // Admin endpoints
+  adminVerify: (id, isVerified) => api.put(`/artists/${id}/verify`, { isVerified }),
+  adminDeactivate: (id, isAvailableForHire) => api.put(`/artists/${id}/active`, { isAvailableForHire }),
+  adminFeature: (id, featured) => api.put(`/artists/${id}/feature`, { featured }),
+  getAdminStats: () => api.get('/artists/admin/stats'),
+  getAllReviews: () => api.get('/artists/admin/reviews'),
+  deleteReview: (artistId, reviewId) => api.delete(`/artists/${artistId}/reviews/${reviewId}`)
 };
 
 // Studios API
@@ -53,10 +74,19 @@ export const studiosAPI = {
   update: (id, studioData) => api.put(`/studios/${id}`, studioData),
   delete: (id) => api.delete(`/studios/${id}`),
   updateAvailability: (id, availabilityData) => api.put(`/studios/${id}/availability`, availabilityData),
-  uploadImages: (id, formData) => api.post(`/studios/${id}/images`, formData, {
+  uploadImages: (id, formData) => api.put(`/studios/${id}/images`, formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
-  addRating: (id, ratingData) => api.post(`/studios/${id}/ratings`, ratingData)
+  addRating: (id, ratingData) => api.post(`/studios/${id}/ratings`, ratingData),
+  getFeatured: () => api.get('/studios/featured'),
+  search: (query) => api.get('/studios/search', { params: { q: query } }),
+  // Admin endpoints
+  adminVerify: (id, isVerified) => api.put(`/studios/${id}/verify`, { isVerified }),
+  adminDeactivate: (id, isAvailableForHire) => api.put(`/studios/${id}/active`, { isAvailableForHire }),
+  adminFeature: (id, featured) => api.put(`/studios/${id}/feature`, { featured }),
+  getAdminStats: () => api.get('/studios/admin/stats'),
+  getAllReviews: () => api.get('/studios/admin/reviews'),
+  deleteReview: (studioId, reviewId) => api.delete(`/studios/${studioId}/reviews/${reviewId}`)
 };
 
 // Bookings API
@@ -71,7 +101,11 @@ export const bookingsAPI = {
   getArtistBookings: () => api.get('/bookings/artist'),
   getStudioBookings: () => api.get('/bookings/studio'),
   updateStatus: (id, status) => api.put(`/bookings/${id}/status`, { status }),
-  updatePayment: (id, paymentData) => api.put(`/bookings/${id}/payment`, paymentData)
+  updatePayment: (id, paymentData) => api.put(`/bookings/${id}/payment`, paymentData),
+  // Admin endpoints
+  adminUpdateStatus: (id, status, cancellationReason) => api.put(`/bookings/${id}/adminstatus`, { status, cancellationReason }),
+  adminRefund: (id) => api.put(`/bookings/${id}/refund`),
+  getAdminStats: () => api.get('/bookings/admin/stats')
 };
 
 // Users API (admin only)
@@ -80,7 +114,21 @@ export const usersAPI = {
   getById: (id) => api.get(`/users/${id}`),
   create: (userData) => api.post('/users', userData),
   update: (id, userData) => api.put(`/users/${id}`, userData),
-  delete: (id) => api.delete(`/users/${id}`)
+  delete: (id) => api.delete(`/users/${id}`),
+  getByRole: (role) => api.get(`/users/role/${role}`),
+  updateVerification: (id, isVerified) => api.put(`/users/${id}/verify`, { isVerified }),
+  updateActiveStatus: (id, isActive) => api.put(`/users/${id}/active`, { isActive }),
+  getStats: () => api.get('/users/stats'),
+  // Admin endpoints
+  impersonate: (id) => api.post(`/users/${id}/impersonate`),
+  resetPassword: (id, password) => api.put(`/users/${id}/resetpassword`, { password }),
+  assignRole: (id, role) => api.put(`/users/${id}/role`, { role }),
+  getAdminStats: () => api.get('/users/admin/stats')
+};
+
+// Health check
+export const healthAPI = {
+  check: () => api.get('/health')
 };
 
 export default api;

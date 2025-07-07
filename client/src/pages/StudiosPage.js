@@ -167,31 +167,30 @@ const StudiosPage = () => {
   const allFacilities = [...new Set(studios.flatMap(studio => studio.facilities))];
 
   return (
-    <div className="pt-28 pb-16 bg-gray-50 min-h-screen">
-      <div className="container mx-auto px-4">
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+      <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Recording Studios</h1>
-          <p className="text-gray-600">Find and book the perfect recording studio across Sri Lanka</p>
+        <div className="mb-12">
+          <h1 className="text-5xl md:text-6xl font-extrabold mb-3 tracking-tight bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 bg-clip-text text-transparent drop-shadow">Recording Studios</h1>
+          <p className="text-xl text-dark/70 font-medium">Find and book the perfect recording studio across Sri Lanka</p>
         </div>
-        
         {/* Search and Filter Bar */}
-        <div className="bg-white rounded-xl shadow-md p-4 mb-8">
+        <div className="bg-glass/80 rounded-3xl shadow-glass p-6 mb-12 border border-primary-50 backdrop-blur-xs">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FiSearch className="text-gray-500" />
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary-500">
+                <FiSearch className="text-xl" />
               </div>
               <input
                 type="text"
-                className="form-input pl-10 w-full"
+                className="w-full pl-12 pr-4 py-4 bg-white/80 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent backdrop-blur-xs font-medium text-dark placeholder-gray-500"
                 placeholder="Search studios by name or description..."
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
             <button 
-              className="btn btn-outline flex items-center justify-center"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-xl font-bold text-lg shadow hover:scale-105 hover:shadow-2xl transition-all duration-200"
               onClick={() => setShowFilters(!showFilters)}
             >
               <FiFilter className="mr-2" />

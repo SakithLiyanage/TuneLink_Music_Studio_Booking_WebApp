@@ -22,13 +22,13 @@ const AboutPage = () => {
   };
 
   return (
-    <div className="pt-28">
+    <div className="pt-28 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-primary text-white py-16">
-        <div className="container mx-auto px-4">
+      <section className="bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <motion.h1 
-              className="text-4xl md:text-5xl font-bold mb-6"
+              className="text-5xl md:text-6xl font-extrabold mb-8 tracking-tight"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -36,7 +36,7 @@ const AboutPage = () => {
               About TuneLink Sri Lanka
             </motion.h1>
             <motion.p 
-              className="text-xl leading-relaxed text-blue-100"
+              className="text-2xl leading-relaxed text-primary-100 font-medium"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -48,24 +48,24 @@ const AboutPage = () => {
       </section>
 
       {/* Our Story */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-3xl font-bold mb-6">Our Story</h2>
+              <h2 className="text-4xl font-extrabold mb-8 text-primary-700">Our Story</h2>
               <div className="prose prose-lg max-w-none">
-                <p className="mb-4 text-gray-700">
+                <p className="mb-6 text-lg text-dark/70 font-medium">
                   TuneLink was founded in 2023 with a simple mission: to make music production and collaboration accessible to everyone in Sri Lanka.
                 </p>
-                <p className="mb-4 text-gray-700">
+                <p className="mb-6 text-lg text-dark/70 font-medium">
                   We noticed that talented musicians often struggled to find appropriate recording spaces, while studios had difficulty reaching potential clients. At the same time, clients looking for musical talent had limited options to discover artists.
                 </p>
-                <p className="text-gray-700">
+                <p className="text-lg text-dark/70 font-medium">
                   TuneLink bridges these gaps by providing a comprehensive platform where studios, artists, and clients can connect, collaborate, and create amazing music together.
                 </p>
               </div>
@@ -80,66 +80,66 @@ const AboutPage = () => {
               <img
                 src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=600"
                 alt="Studio Recording"
-                className="rounded-2xl shadow-xl w-full"
+                className="rounded-3xl shadow-glass w-full border border-primary-100"
               />
               {/* Decorative elements */}
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-primary-100 rounded-full -z-10"></div>
-              <div className="absolute -top-6 -left-6 w-32 h-32 bg-secondary-100 rounded-full -z-10"></div>
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-primary-100 rounded-full -z-10 blur-sm"></div>
+              <div className="absolute -top-8 -left-8 w-40 h-40 bg-accent-100 rounded-full -z-10 blur-sm"></div>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* Mission & Values */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Mission & Values</h2>
-            <p className="text-gray-600">Guided by our passion for music and community, we're committed to these core principles</p>
+      <section className="py-20 bg-glass/80 backdrop-blur-xs">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-4xl mx-auto mb-16">
+            <h2 className="text-4xl font-extrabold mb-6 text-primary-700">Our Mission & Values</h2>
+            <p className="text-xl text-dark/70 font-medium">Guided by our passion for music and community, we're committed to these core principles</p>
           </div>
           
           <motion.div 
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 gap-10"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
             <motion.div 
-              className="bg-white p-6 rounded-xl shadow-lg"
+              className="bg-glass/80 p-8 rounded-3xl shadow-glass border border-primary-100 backdrop-blur-xs"
               variants={itemVariants}
             >
-              <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-4">
-                <FiHeart size={24} />
+              <div className="w-16 h-16 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl flex items-center justify-center mb-6 shadow-glass">
+                <FiHeart size={28} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Passion for Music</h3>
-              <p className="text-gray-600">
+              <h3 className="text-2xl font-bold mb-4 text-primary-700">Passion for Music</h3>
+              <p className="text-lg text-dark/70 font-medium">
                 We're music enthusiasts committed to supporting Sri Lanka's vibrant music ecosystem and helping artists thrive.
               </p>
             </motion.div>
             
             <motion.div 
-              className="bg-white p-6 rounded-xl shadow-lg"
+              className="bg-glass/80 p-8 rounded-3xl shadow-glass border border-primary-100 backdrop-blur-xs"
               variants={itemVariants}
             >
-              <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-4">
-                <FiUsers size={24} />
+              <div className="w-16 h-16 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl flex items-center justify-center mb-6 shadow-glass">
+                <FiUsers size={28} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Community Building</h3>
-              <p className="text-gray-600">
+              <h3 className="text-2xl font-bold mb-4 text-primary-700">Community Building</h3>
+              <p className="text-lg text-dark/70 font-medium">
                 Creating meaningful connections between artists, studios, and clients to foster collaboration and creativity.
               </p>
             </motion.div>
             
             <motion.div 
-              className="bg-white p-6 rounded-xl shadow-lg"
+              className="bg-glass/80 p-8 rounded-3xl shadow-glass border border-primary-100 backdrop-blur-xs"
               variants={itemVariants}
             >
-              <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-4">
-                <FiAward size={24} />
+              <div className="w-16 h-16 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-2xl flex items-center justify-center mb-6 shadow-glass">
+                <FiAward size={28} />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Quality First</h3>
-              <p className="text-gray-600">
+              <h3 className="text-2xl font-bold mb-4 text-primary-700">Quality First</h3>
+              <p className="text-lg text-dark/70 font-medium">
                 We maintain high standards for our platform, ensuring reliable connections and exceptional music experiences.
               </p>
             </motion.div>
@@ -148,10 +148,10 @@ const AboutPage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="bg-white shadow-xl rounded-2xl p-8 md:p-12">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="bg-glass/80 shadow-glass rounded-3xl p-10 md:p-16 border border-primary-100 backdrop-blur-xs">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
               <motion.div 
                 className="text-center"
                 initial={{ opacity: 0, y: 20 }}
@@ -159,11 +159,11 @@ const AboutPage = () => {
                 transition={{ duration: 0.5 }}
                 viewport={{ once: true }}
               >
-                <div className="text-primary-600 mb-2">
-                  <FiUsers size={36} className="mx-auto" />
+                <div className="text-primary-700 mb-4">
+                  <FiUsers size={48} className="mx-auto" />
                 </div>
-                <div className="text-4xl font-bold mb-1">500+</div>
-                <div className="text-gray-600">Artists</div>
+                <div className="text-5xl font-extrabold mb-2 text-primary-700">500+</div>
+                <div className="text-lg text-dark/70 font-semibold">Artists</div>
               </motion.div>
               
               <motion.div 
@@ -173,11 +173,11 @@ const AboutPage = () => {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="text-primary-600 mb-2">
-                  <FiMusic size={36} className="mx-auto" />
+                <div className="text-primary-700 mb-4">
+                  <FiMusic size={48} className="mx-auto" />
                 </div>
-                <div className="text-4xl font-bold mb-1">100+</div>
-                <div className="text-gray-600">Studios</div>
+                <div className="text-5xl font-extrabold mb-2 text-primary-700">100+</div>
+                <div className="text-lg text-dark/70 font-semibold">Studios</div>
               </motion.div>
               
               <motion.div 
@@ -187,11 +187,11 @@ const AboutPage = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 viewport={{ once: true }}
               >
-                <div className="text-primary-600 mb-2">
-                  <FiClock size={36} className="mx-auto" />
+                <div className="text-primary-700 mb-4">
+                  <FiClock size={48} className="mx-auto" />
                 </div>
-                <div className="text-4xl font-bold mb-1">5000+</div>
-                <div className="text-gray-600">Bookings</div>
+                <div className="text-5xl font-extrabold mb-2 text-primary-700">5000+</div>
+                <div className="text-lg text-dark/70 font-semibold">Bookings</div>
               </motion.div>
               
               <motion.div 
@@ -201,11 +201,11 @@ const AboutPage = () => {
                 transition={{ duration: 0.5, delay: 0.3 }}
                 viewport={{ once: true }}
               >
-                <div className="text-primary-600 mb-2">
-                  <FiGlobe size={36} className="mx-auto" />
+                <div className="text-primary-700 mb-4">
+                  <FiGlobe size={48} className="mx-auto" />
                 </div>
-                <div className="text-4xl font-bold mb-1">25+</div>
-                <div className="text-gray-600">Cities</div>
+                <div className="text-5xl font-extrabold mb-2 text-primary-700">25+</div>
+                <div className="text-lg text-dark/70 font-semibold">Cities</div>
               </motion.div>
             </div>
           </div>

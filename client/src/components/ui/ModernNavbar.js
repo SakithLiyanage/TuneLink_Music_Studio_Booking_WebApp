@@ -78,39 +78,37 @@ const ModernNavbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-xl shadow-glass ${
         isScrolled 
-          ? 'py-2 bg-white shadow-md' 
-          : 'py-4 bg-white/80 backdrop-blur-lg'
+          ? 'py-2 bg-white/90 border-b border-primary-100 shadow-lg' 
+          : 'py-4 bg-glass/80 border-b border-primary-50'
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         <nav className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2 z-10">
+          <Link to="/" className="flex items-center space-x-2 z-10 group">
             <motion.div 
-              className="bg-gradient-to-r from-primary-600 to-primary-500 w-10 h-10 rounded-lg flex items-center justify-center"
+              className="bg-gradient-to-tr from-primary-700 via-primary-500 to-accent-400 w-12 h-12 rounded-2xl flex items-center justify-center shadow-neumorph group-hover:scale-105 group-hover:rotate-3 transition-transform duration-300"
               whileHover={{ 
-                scale: 1.05,
-                rotate: [0, -5, 5, 0],
+                scale: 1.08,
+                rotate: [0, -6, 6, 0],
                 transition: { duration: 0.5 }
               }}
             >
-              <FiMusic className="text-white text-xl" />
+              <FiMusic className="text-white text-2xl drop-shadow-lg" />
             </motion.div>
             <motion.span 
-              className="text-2xl font-display font-bold"
+              className="text-3xl font-extrabold font-sans tracking-tight bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 bg-clip-text text-transparent drop-shadow-sm"
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-primary-600">Tune</span>
-              <span className="text-secondary-500">Link</span>
+              Tune<span className="text-accent-500">Link</span>
             </motion.span>
           </Link>
-          
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-2">
             {navigationLinks.map((link, index) => (
               <motion.div
                 key={link.name}
@@ -120,10 +118,10 @@ const ModernNavbar = () => {
               >
                 <Link 
                   to={link.path}
-                  className={`px-4 py-2 rounded-lg flex items-center space-x-1 transition-colors ${
+                  className={`px-5 py-2 rounded-xl flex items-center space-x-2 font-semibold text-lg transition-all duration-200 shadow-inner hover:shadow-lg hover:scale-105 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-100 ${
                     location.pathname === link.path 
-                      ? 'text-primary-600 bg-primary-50/50' 
-                      : 'text-text-light hover:text-primary-600 hover:bg-primary-50/30'
+                      ? 'text-primary-700 bg-primary-100/70 shadow-glass' 
+                      : 'text-dark hover:text-primary-700'
                   }`}
                 >
                   {link.icon}
@@ -132,52 +130,50 @@ const ModernNavbar = () => {
               </motion.div>
             ))}
           </div>
-          
           {/* User Section or Auth Buttons */}
           <div className="hidden md:block">
             {currentUser ? (
               <div className="relative">
                 <motion.button
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition ${
-                    userMenuOpen ? 'bg-card' : 'hover:bg-card'
+                  className={`flex items-center space-x-3 px-4 py-2 rounded-xl bg-white/70 shadow-neumorph hover:shadow-lg hover:bg-glass transition-all duration-200 border border-primary-100 ${
+                    userMenuOpen ? 'ring-2 ring-primary-300' : ''
                   }`}
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   {currentUser.avatar ? (
                     <img 
                       src={currentUser.avatar} 
                       alt={currentUser.name}
-                      className="w-9 h-9 rounded-full object-cover border-2 border-primary-200"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-primary-200 shadow"
                     />
                   ) : (
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-r from-primary-600 to-primary-500 text-white flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-600 to-accent-400 text-white flex items-center justify-center font-bold text-lg shadow">
                       {currentUser.name?.charAt(0).toUpperCase()}
                     </div>
                   )}
-                  <span className="font-medium text-text-main">{currentUser.name}</span>
+                  <span className="font-semibold text-dark text-base">{currentUser.name}</span>
                   <FiChevronDown className={`transition-transform text-primary-600 ${userMenuOpen ? 'rotate-180' : ''}`} />
                 </motion.button>
-                
                 <AnimatePresence>
                   {userMenuOpen && (
                     <motion.div
-                      className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg py-2 border border-primary-100"
+                      className="absolute right-0 mt-2 w-72 bg-white/90 rounded-2xl shadow-glass py-3 border border-primary-100 backdrop-blur-xl"
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 25 }}
                     >
                       <motion.div
-                        className="px-4 py-3 border-b border-gray-100"
+                        className="px-5 py-3 border-b border-primary-50"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                       >
                         <p className="text-xs text-gray-500">Signed in as</p>
-                        <p className="font-medium text-gray-800">{currentUser.email}</p>
+                        <p className="font-semibold text-gray-800">{currentUser.email}</p>
                         <div className="mt-1">
-                          <span className={`text-xs px-2 py-1 rounded-full ${
+                          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
                             currentUser.role === 'admin' ? 'bg-purple-100 text-purple-700' :
                             currentUser.role === 'artist' ? 'bg-blue-100 text-blue-700' :
                             currentUser.role === 'studio' ? 'bg-green-100 text-green-700' :
@@ -187,11 +183,10 @@ const ModernNavbar = () => {
                           </span>
                         </div>
                       </motion.div>
-                      
                       <div className="py-1">
                         <Link 
                           to={getDashboardUrl()}
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center px-5 py-2 text-gray-700 hover:bg-primary-50/60 rounded-lg transition-all"
                           onClick={() => setUserMenuOpen(false)}
                         >
                           <FiUser className="mr-3 text-primary-500" />
@@ -199,7 +194,7 @@ const ModernNavbar = () => {
                         </Link>
                         <Link 
                           to={`${getDashboardUrl()}/profile`}
-                          className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center px-5 py-2 text-gray-700 hover:bg-primary-50/60 rounded-lg transition-all"
                           onClick={() => setUserMenuOpen(false)}
                         >
                           <FiSettings className="mr-3 text-primary-500" />
