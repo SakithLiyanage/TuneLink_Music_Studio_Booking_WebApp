@@ -6,6 +6,7 @@ import {
   FiCalendar, FiClock, FiMusic, FiGrid, FiMap, FiUser, 
   FiPlus, FiMoreHorizontal, FiChevronRight 
 } from 'react-icons/fi';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 
 const ClientDashboard = () => {
   const { currentUser } = useAuth();
@@ -144,7 +145,7 @@ const ClientDashboard = () => {
           
           {loading ? (
             <div className="bg-white rounded-xl shadow-soft p-6 flex justify-center">
-              <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <LoadingSpinner text="Loading bookings..." />
             </div>
           ) : upcomingBookings.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -215,7 +216,7 @@ const ClientDashboard = () => {
           
           {loading ? (
             <div className="h-48 bg-white rounded-xl shadow-soft flex justify-center items-center">
-              <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <LoadingSpinner text="Loading activity..." />
             </div>
           ) : recentBookings.length > 0 ? (
             <div className="bg-white rounded-xl shadow-soft overflow-hidden">

@@ -272,6 +272,26 @@ exports.adminRefundBooking = asyncHandler(async (req, res, next) => {
   res.status(200).json({ success: true, data: booking });
 });
 
+// @desc    Update booking payment status
+// @route   PUT /api/bookings/:id/payment
+// @access  Private
+exports.updateBookingPayment = asyncHandler(async (req, res, next) => {
+  const booking = await Booking.findById(req.params.id);
+  if (!booking) {
+    return next(new ErrorResponse(`Booking not found with id of ${req.params.id}`, 404));
+  }
+  // Only booking owner (client) or admin can update payment
+  if (booking.client.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User ${req.user.id} is not authorized to update payment for this booking`, 401));
+  }
+  // Update payment status, method, and paymentId if provided
+  if (req.body.paymentStatus) booking.paymentStatus = req.body.paymentStatus;
+  if (req.body.paymentMethod) booking.paymentMethod = req.body.paymentMethod;
+  if (req.body.paymentId) booking.paymentId = req.body.paymentId;
+  await booking.save();
+  res.status(200).json({ success: true, data: booking });
+});
+
 // @desc    Get booking stats for dashboard
 // @route   GET /api/bookings/admin/stats
 // @access  Private/Admin

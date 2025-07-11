@@ -11,7 +11,8 @@ const {
   getStudioBookings,
   adminUpdateBookingStatus,
   adminRefundBooking,
-  getBookingStats
+  getBookingStats,
+  updateBookingPayment
 } = require('../controllers/bookings');
 
 const { protect, authorize, checkOwnership } = require('../middleware/auth');
@@ -50,5 +51,8 @@ router.route('/:id/adminstatus')
 
 router.route('/:id/refund')
   .put(authorize('admin'), adminRefundBooking);
+
+router.route('/:id/payment')
+  .put(checkOwnership('Booking'), updateBookingPayment);
 
 module.exports = router;

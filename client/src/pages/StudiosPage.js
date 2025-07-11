@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FiSearch, FiFilter, FiMapPin, FiStar, FiClock, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
+import { studiosAPI } from '../services/api';
+import WaveDivider from '../components/ui/WaveDivider';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const StudiosPage = () => {
   const [studios, setStudios] = useState([]);
@@ -18,89 +21,25 @@ const StudiosPage = () => {
   // Fetch studios data
   useEffect(() => {
     const fetchStudios = async () => {
+      setLoading(true);
       try {
-        // In a real app, we would fetch from API
-        // For now, using dummy data
-        const dummyStudios = [
-          {
-            _id: '1',
-            name: 'Celestial Sound Studios',
-            description: 'Professional recording studio with state-of-the-art equipment.',
-            location: { city: 'Colombo', address: '123 Galle Road' },
-            pricePerHour: 3500,
-            images: [{ url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=500' }],
-            averageRating: 4.7,
-            facilities: ['Recording Booth', 'Mixing Console', 'Instruments'],
-            amenities: ['Air Conditioning', 'Lounge', 'Parking']
-          },
-          {
-            _id: '2',
-            name: 'Rhythm Nation',
-            description: 'Cozy recording space perfect for solo artists and small bands.',
-            location: { city: 'Kandy', address: '45 Hill Street' },
-            pricePerHour: 2800,
-            images: [{ url: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=500' }],
-            averageRating: 4.5,
-            facilities: ['Recording Booth', 'Mixing Console'],
-            amenities: ['Air Conditioning', 'WiFi']
-          },
-          {
-            _id: '3',
-            name: 'Ocean Wave Productions',
-            description: 'Beachside studio with unique acoustic characteristics.',
-            location: { city: 'Galle', address: '78 Beach Road' },
-            pricePerHour: 3200,
-            images: [{ url: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=500' }],
-            averageRating: 4.8,
-            facilities: ['Recording Booth', 'Mixing Console', 'Instruments', 'Live Room'],
-            amenities: ['Air Conditioning', 'Lounge', 'Beachfront View']
-          },
-          {
-            _id: '4',
-            name: 'Urban Beats Studio',
-            description: 'Modern studio specializing in urban and electronic music.',
-            location: { city: 'Colombo', address: '15 Park Avenue' },
-            pricePerHour: 3800,
-            images: [{ url: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=500' }],
-            averageRating: 4.6,
-            facilities: ['Recording Booth', 'Mixing Console', 'Beat Production'],
-            amenities: ['Air Conditioning', 'Lounge', 'Parking']
-          },
-          {
-            _id: '5',
-            name: 'Heritage Records',
-            description: 'Traditional studio focusing on acoustic and cultural music.',
-            location: { city: 'Kandy', address: '22 Temple Road' },
-            pricePerHour: 2500,
-            images: [{ url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=500' }],
-            averageRating: 4.9,
-            facilities: ['Recording Booth', 'Traditional Instruments'],
-            amenities: ['Garden', 'Tea Service']
-          },
-          {
-            _id: '6',
-            name: 'Coastal Tunes',
-            description: 'Relaxed studio environment with ocean views.',
-            location: { city: 'Negombo', address: '56 Beach Road' },
-            pricePerHour: 3000,
-            images: [{ url: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=500' }],
-            averageRating: 4.4,
-            facilities: ['Recording Booth', 'Mixing Console', 'Outdoor Recording'],
-            amenities: ['Beachfront', 'Accommodation']
-          }
-        ];
-        
-        setStudios(dummyStudios);
-        setFilteredStudios(dummyStudios);
-        setLoading(false);
+        const params = {};
+        if (searchTerm) params.search = searchTerm;
+        if (filters.city) params.city = filters.city;
+        if (filters.priceRange) params.priceRange = filters.priceRange;
+        if (filters.facilities.length > 0) params.facilities = filters.facilities.join(',');
+        const { data } = await studiosAPI.getAll(params);
+        setStudios(data.data || []);
+        setFilteredStudios(data.data || []);
       } catch (error) {
         console.error('Error fetching studios:', error);
-        setLoading(false);
+        setStudios([]);
+        setFilteredStudios([]);
       }
+      setLoading(false);
     };
-
     fetchStudios();
-  }, []);
+  }, [searchTerm, filters]);
 
   // Handle search and filters
   useEffect(() => {
@@ -131,7 +70,7 @@ const StudiosPage = () => {
     if (filters.facilities.length) {
       results = results.filter(studio => 
         filters.facilities.every(facility => 
-          studio.facilities.includes(facility)
+          (studio.facilities || []).map(f => f.name).includes(facility)
         )
       );
     }
@@ -164,10 +103,10 @@ const StudiosPage = () => {
   const cities = [...new Set(studios.map(studio => studio.location.city))];
   
   // Get all unique facilities for filter checkboxes
-  const allFacilities = [...new Set(studios.flatMap(studio => studio.facilities))];
+  const allFacilities = [...new Set(studios.flatMap(studio => (studio.facilities || []).map(f => f.name)).filter(Boolean))];
 
   return (
-    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
         <div className="mb-12">
@@ -175,29 +114,37 @@ const StudiosPage = () => {
           <p className="text-xl text-dark/70 font-medium">Find and book the perfect recording studio across Sri Lanka</p>
         </div>
         {/* Search and Filter Bar */}
-        <div className="bg-glass/80 rounded-3xl shadow-glass p-6 mb-12 border border-primary-50 backdrop-blur-xs">
+        <motion.div
+          className="bg-glass/80 rounded-3xl shadow-glass p-6 mb-12 border border-primary-50 backdrop-blur-xs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary-500">
-                <FiSearch className="text-xl" />
-              </div>
-              <input
-                type="text"
-                className="w-full pl-12 pr-4 py-4 bg-white/80 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent backdrop-blur-xs font-medium text-dark placeholder-gray-500"
-                placeholder="Search studios by name or description..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-              />
+              <motion.div className="relative" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-primary-500">
+                  <FiSearch className="text-xl" />
+                </div>
+                <input
+                  type="text"
+                  className="w-full pl-12 pr-4 py-4 bg-white/80 border border-primary-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent backdrop-blur-xs font-medium text-dark placeholder-gray-500"
+                  placeholder="Search studios by name or description..."
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </motion.div>
             </div>
-            <button 
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-xl font-bold text-lg shadow hover:scale-105 hover:shadow-2xl transition-all duration-200"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <FiFilter className="mr-2" />
-              Filters {filters.city || filters.priceRange || filters.facilities.length > 0 ? '(Active)' : ''}
-            </button>
+            <motion.div className="flex gap-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+              <button 
+                className="flex items-center px-6 py-3 bg-gradient-to-r from-primary-700 to-accent-400 text-white rounded-xl font-bold text-lg shadow hover:scale-105 hover:shadow-2xl transition-all duration-200"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <FiFilter className="mr-2" />
+                Filters {filters.city || filters.priceRange || filters.facilities.length > 0 ? '(Active)' : ''}
+              </button>
+            </motion.div>
           </div>
-
           {/* Filters Panel */}
           <AnimatePresence>
             {showFilters && (
@@ -223,7 +170,6 @@ const StudiosPage = () => {
                       ))}
                     </select>
                   </div>
-                  
                   {/* Price Range Filter */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Price Range (Rs/hour)</label>
@@ -239,13 +185,12 @@ const StudiosPage = () => {
                       <option value="5000-">Over Rs. 5,000</option>
                     </select>
                   </div>
-                  
                   {/* Facilities Filter */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Facilities</label>
                     <div className="flex flex-wrap gap-2">
                       {allFacilities.map(facility => (
-                        <button
+                        <motion.button
                           key={facility}
                           className={`px-3 py-1 rounded-full text-sm ${
                             filters.facilities.includes(facility)
@@ -253,14 +198,14 @@ const StudiosPage = () => {
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                           onClick={() => toggleFacility(facility)}
+                          whileHover={{ scale: 1.08 }}
                         >
                           {facility}
-                        </button>
+                        </motion.button>
                       ))}
                     </div>
                   </div>
                 </div>
-                
                 <div className="flex justify-end mt-4 pt-2 border-t">
                   <button 
                     className="btn btn-outline text-sm flex items-center mr-2"
@@ -279,12 +224,11 @@ const StudiosPage = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-        
+        </motion.div>
         {/* Results */}
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+            <LoadingSpinner text="Loading studios..." />
           </div>
         ) : filteredStudios.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-xl shadow-md">
@@ -301,17 +245,23 @@ const StudiosPage = () => {
         ) : (
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.08 }
+              }
+            }}
           >
-            {filteredStudios.map(studio => (
+            {filteredStudios.map((studio, idx) => (
               <motion.div 
                 key={studio._id} 
                 className="bg-white rounded-xl shadow-md overflow-hidden card-hover"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                whileHover={{ scale: 1.04, y: -6, boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)' }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -335,9 +285,9 @@ const StudiosPage = () => {
                   <p className="text-gray-600 mb-4 line-clamp-2">{studio.description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {studio.facilities.slice(0, 3).map((facility, idx) => (
+                    {(studio.facilities.slice(0, 3) || []).map((facility, idx) => (
                       <span key={idx} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">
-                        {facility}
+                        {facility.name}
                       </span>
                     ))}
                     {studio.facilities.length > 3 && (
@@ -368,6 +318,7 @@ const StudiosPage = () => {
           </motion.div>
         )}
       </div>
+      <WaveDivider />
     </div>
   );
 };

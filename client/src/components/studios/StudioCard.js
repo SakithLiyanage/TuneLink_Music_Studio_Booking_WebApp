@@ -66,12 +66,12 @@ const StudioCard = ({ studio }) => {
             {name}
           </h3>
           <div className="flex flex-wrap gap-2">
-            {(facilities.slice(0, 3) || ['Recording', 'Mixing']).map((facility, idx) => (
+            {(facilities.slice(0, 3) || []).map((facility, idx) => (
               <span 
                 key={idx} 
                 className="text-sm px-4 py-1 bg-primary-50/80 text-primary-700 rounded-full font-semibold shadow-inner"
               >
-                {facility}
+                {facility.name}
               </span>
             ))}
             {facilities?.length > 3 && (

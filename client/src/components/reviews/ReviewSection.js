@@ -12,16 +12,16 @@ const ReviewSection = ({ reviews = [], averageRating = 0, reviewCount = 0 }) => 
     <div className="space-y-4">
       {reviews.length === 0 && <div className="text-gray-500">No reviews yet.</div>}
       {reviews.map((review) => (
-        <div key={review._id} className="bg-gray-50 rounded-lg p-4">
+        <div key={review._id || review.date} className="bg-gray-50 rounded-lg p-4">
           <div className="flex items-center mb-2">
-            <img src={review.user.image} alt={review.user.name} className="w-8 h-8 rounded-full mr-2" />
-            <span className="font-medium">{review.user.name}</span>
+            <img src={review.user?.avatar || review.user?.image || '/default-avatar.jpg'} alt={review.user?.name || 'User'} className="w-8 h-8 rounded-full mr-2" />
+            <span className="font-medium">{review.user?.name || 'User'}</span>
             <span className="ml-2 flex items-center text-amber-500 text-sm">
               <FiStar className="mr-1" /> {review.rating}
             </span>
-            <span className="ml-auto text-xs text-gray-400">{review.date}</span>
+            <span className="ml-auto text-xs text-gray-400">{review.date ? new Date(review.date).toLocaleDateString() : ''}</span>
           </div>
-          <div className="text-gray-700">{review.text}</div>
+          <div className="text-gray-700">{review.review || review.text}</div>
         </div>
       ))}
     </div>

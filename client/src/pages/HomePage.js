@@ -12,6 +12,8 @@ import StudioCard from '../components/studios/StudioCard';
 import ArtistCard from '../components/artists/ArtistCard';
 import TestimonialSlider from '../components/ui/TestimonialSlider';
 import WaveDivider from '../components/ui/WaveDivider';
+import { useAuth } from '../contexts/AuthContext';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 // Define useScrollAnimation with properly imported useAnimation
 const useScrollAnimation = (threshold = 0.1) => {
@@ -53,6 +55,7 @@ const itemVariants = {
 };
 
 const HomePage = () => {
+  const { currentUser } = useAuth();
   const [featuredStudios, setFeaturedStudios] = useState([]);
   const [featuredArtists, setFeaturedArtists] = useState([]);
   const [genres] = useState([
@@ -64,6 +67,9 @@ const HomePage = () => {
   
   const studioSection = useScrollAnimation(0.2);
   const genreSection = useScrollAnimation(0.2);
+  
+  // Profile progress bar (if logged in)
+  const profileCompletion = currentUser ? Math.min(100, [currentUser.name, currentUser.email, currentUser.avatar].filter(Boolean).length * 33) : 0;
   
   // Fetch featured data (studios and artists)
   useEffect(() => {
@@ -160,6 +166,34 @@ const HomePage = () => {
       {/* Hero Section */}
       <HeroSection />
 
+      {/* Profile Progress Bar */}
+      {currentUser && (
+        <motion.div
+          className="max-w-2xl mx-auto mt-[-40px] mb-8 bg-white/90 rounded-2xl shadow-glass p-6 flex items-center gap-4 border border-primary-100 backdrop-blur-xs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
+          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-primary-600 to-accent-400 flex items-center justify-center text-white font-bold text-xl">
+            {currentUser.name?.charAt(0).toUpperCase()}
+          </div>
+          <div className="flex-1">
+            <div className="font-semibold text-primary-700 mb-1">Profile Completion</div>
+            <div className="w-full bg-primary-100 rounded-full h-3">
+              <motion.div
+                className="bg-gradient-to-r from-primary-600 to-accent-400 h-3 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${profileCompletion}%` }}
+                transition={{ duration: 1 }}
+                style={{ width: `${profileCompletion}%` }}
+              />
+            </div>
+            <div className="text-xs text-gray-500 mt-1">{profileCompletion}% complete</div>
+          </div>
+          <Link to={`/${currentUser.role}/profile`} className="btn btn-primary btn-sm ml-4">Edit Profile</Link>
+        </motion.div>
+      )}
+
       {/* Stats Section with Animated Counters */}
       <section className="py-20 bg-white relative overflow-hidden">
         <div className="container mx-auto px-4">
@@ -239,7 +273,7 @@ const HomePage = () => {
           
           {loading ? (
             <div className="flex justify-center py-10">
-              <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <LoadingSpinner text="Loading studios..." />
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -262,32 +296,22 @@ const HomePage = () => {
         </div>
       </section>
       
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
+      {/* Testimonials Section - add more animation */}
+      <section className="py-20 bg-gradient-to-br from-accent-50 via-primary-100 to-white relative overflow-hidden">
+        <div className="absolute -top-32 right-0 w-96 h-96 bg-primary-200 opacity-20 rounded-full blur-3xl"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.h2
+            className="text-4xl md:text-5xl font-extrabold text-center mb-10 bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 bg-clip-text text-transparent drop-shadow"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={containerVariants}
-            className="mb-12"
+            transition={{ duration: 0.7 }}
           >
-            <motion.h2 
-              className="text-3xl md:text-4xl font-bold text-center mb-3 text-text-main"
-              variants={itemVariants}
-            >
-              <AdvancedAnimatedText text="What People Say" className="block" />
-            </motion.h2>
-            <motion.p 
-              className="text-text-light text-center max-w-2xl mx-auto"
-              variants={itemVariants}
-            >
-              Hear from our community of artists, studios, and music lovers
-            </motion.p>
-          </motion.div>
-          
+            What Our Users Say
+          </motion.h2>
           <TestimonialSlider testimonials={testimonials} />
         </div>
+        <WaveDivider flip />
       </section>
 
       {/* Genre Browse Section with Interactive Cards */}
@@ -415,7 +439,7 @@ const HomePage = () => {
           
           {loading ? (
             <div className="flex justify-center py-10">
-              <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <LoadingSpinner text="Loading artists..." />
             </div>
           ) : (
             <motion.div 
@@ -487,6 +511,66 @@ const HomePage = () => {
             </Link>
           </motion.div>
         </div>
+      </section>
+
+      {/* Animated Feature Cards Section */}
+      <section className="py-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light relative overflow-hidden">
+        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-accent-200 opacity-30 rounded-full blur-3xl"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={containerVariants}
+            className="mb-16"
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-extrabold text-center mb-6 bg-gradient-to-r from-primary-700 via-primary-500 to-accent-400 bg-clip-text text-transparent drop-shadow"
+              variants={itemVariants}
+            >
+              Why Choose <span className="text-accent-500">TuneLink</span>?
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-dark/70 text-center max-w-2xl mx-auto mb-10"
+              variants={itemVariants}
+            >
+              Discover a new era of music collaboration, booking, and creativity with a platform designed for artists, studios, and music lovers.
+            </motion.p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: <FiMusic size={32} className="text-primary-600" />,
+                  title: 'Top Studios',
+                  desc: 'Book the best studios with world-class equipment and acoustics.'
+                },
+                {
+                  icon: <FiHeadphones size={32} className="text-accent-600" />,
+                  title: 'Talented Artists',
+                  desc: 'Connect with session musicians, producers, and vocalists.'
+                },
+                {
+                  icon: <FiUsers size={32} className="text-secondary-600" />,
+                  title: 'Community',
+                  desc: 'Join a growing network of music professionals and enthusiasts.'
+                }
+              ].map((card, idx) => (
+                <motion.div
+                  key={card.title}
+                  className="bg-white/90 rounded-3xl shadow-glass p-8 flex flex-col items-center text-center border border-primary-100 hover:scale-105 hover:shadow-2xl transition-all duration-300 group"
+                  variants={itemVariants}
+                  whileHover={{ y: -8, scale: 1.07 }}
+                >
+                  <div className="mb-4 p-4 rounded-full bg-gradient-to-br from-primary-100 to-accent-100 group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300">
+                    {card.icon}
+                  </div>
+                  <div className="text-2xl font-bold mb-2 text-primary-700 group-hover:text-accent-600 transition-all duration-300">{card.title}</div>
+                  <div className="text-dark/70 text-lg font-medium">{card.desc}</div>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+        <WaveDivider />
       </section>
 
       {/* CTA Section with Modern Design */}

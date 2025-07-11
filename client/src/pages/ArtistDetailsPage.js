@@ -12,6 +12,9 @@ import ReviewSection from '../components/reviews/ReviewSection';
 import ImageGallery from '../components/ui/ImageGallery';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import AudioSamplePlayer from '../components/artists/AudioSamplePlayer';
+import { artistsAPI } from '../services/api';
+import { bookingsAPI } from '../services/api';
+import WaveDivider from '../components/ui/WaveDivider';
 
 // Local ArtistCard component to prevent circular dependencies
 const ArtistCard = ({ artist, index = 0 }) => {
@@ -73,132 +76,38 @@ const ArtistDetailsPage = () => {
   const [activeSection, setActiveSection] = useState('overview');
   const [isLiked, setIsLiked] = useState(false);
   
+  // Booking state
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingStart, setBookingStart] = useState('');
+  const [bookingEnd, setBookingEnd] = useState('');
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingError, setBookingError] = useState('');
+  const [bookingLoading, setBookingLoading] = useState(false);
+
+  // Add a function to refresh artist details
+  const refreshArtist = async () => {
+    setLoading(true);
+    try {
+      const { data } = await artistsAPI.getById(id);
+      setArtist(data.data);
+    } catch (error) {
+      setArtist(null);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     const fetchArtistDetails = async () => {
+      setLoading(true);
       try {
-        // In a real app, this would be an API call
-        // For now, using mock data
-        const mockArtist = {
-          _id: id,
-          user: {
-            _id: 'user123',
-            name: 'Rajiv Mendis',
-            email: 'rajiv@example.com',
-            avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-            phoneNumber: '+94 77 123 4567'
-          },
-          bio: "Multi-instrumentalist and music producer with over 10 years of experience in Sri Lankan music scene. Specializing in fusion of traditional Sri Lankan sounds with modern electronic production.",
-          longDescription: `With a passion for blending traditional Sri Lankan music with contemporary styles, I've worked with both established and emerging artists across the country. 
-
-My approach combines technical precision with creative innovation, helping artists develop their unique sound while maintaining the highest quality production standards.
-
-I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings and horns for your productions. My studio experience spans from indie projects to commercial film soundtracks.`,
-          location: { 
-            city: 'Colombo', 
-            address: '45 Park Avenue, Colombo 5',
-            coordinates: { lat: 6.9102, lng: 79.8622 }
-          },
-          hourlyRate: 2500,
-          dailyRate: 15000,
-          genres: ['Pop', 'Rock', 'Electronic', 'Folk', 'World'],
-          instruments: ['Guitar', 'Keyboard', 'Vocals', 'Programming'],
-          services: [
-            'Session Musician', 
-            'Music Production', 
-            'Arrangement', 
-            'Songwriting',
-            'Mixing & Mastering'
-          ],
-          languages: ['English', 'Sinhala', 'Tamil'],
-          images: [
-            { url: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1600' },
-            { url: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=1600' },
-            { url: 'https://images.unsplash.com/photo-1598387993240-14a6f69672ff?q=80&w=1600' }
-          ],
-          audioSamples: [
-            { 
-              id: 1, 
-              title: 'Sri Lankan Beats', 
-              genre: 'World/Electronic',
-              url: 'https://actions.google.com/sounds/v1/ambiences/forest_ambience.ogg',
-              coverImage: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=400'
-            },
-            { 
-              id: 2, 
-              title: 'Sunset Chill', 
-              genre: 'Electronic',
-              url: 'https://actions.google.com/sounds/v1/ambiences/forest_ambience.ogg',
-              coverImage: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=400'
-            },
-            { 
-              id: 3, 
-              title: 'Mountain Dreams', 
-              genre: 'Folk/Acoustic',
-              url: 'https://actions.google.com/sounds/v1/ambiences/forest_ambience.ogg',
-              coverImage: 'https://images.unsplash.com/photo-1598387993240-14a6f69672ff?q=80&w=400'
-            }
-          ],
-          averageRating: 4.8,
-          reviewCount: 17,
-          availability: [
-            { day: 'Monday', slots: [{ startTime: '10:00', endTime: '18:00', isAvailable: true }] },
-            { day: 'Tuesday', slots: [{ startTime: '10:00', endTime: '18:00', isAvailable: true }] },
-            { day: 'Wednesday', slots: [{ startTime: '10:00', endTime: '18:00', isAvailable: true }] },
-            { day: 'Thursday', slots: [{ startTime: '10:00', endTime: '18:00', isAvailable: true }] },
-            { day: 'Friday', slots: [{ startTime: '10:00', endTime: '18:00', isAvailable: true }] },
-            { day: 'Saturday', slots: [{ startTime: '12:00', endTime: '20:00', isAvailable: true }] },
-            { day: 'Sunday', slots: [{ startTime: '00:00', endTime: '00:00', isAvailable: false }] },
-          ],
-          experience: [
-            {
-              title: "Lead Guitarist - Serendib Band",
-              years: "2018-Present",
-              description: "Performing at venues across Sri Lanka and international festivals"
-            },
-            {
-              title: "Music Producer - Sunrise Studios",
-              years: "2015-2018",
-              description: "Produced over 20 albums for local and international artists"
-            },
-            {
-              title: "Session Musician",
-              years: "2012-Present",
-              description: "Worked on over 50 recording projects"
-            }
-          ],
-          reviews: [
-            {
-              _id: 'rev1',
-              user: { name: 'Amal Fernando', image: 'https://randomuser.me/api/portraits/men/44.jpg' },
-              rating: 5,
-              date: '2023-10-15',
-              text: 'Rajiv is an outstanding musician! His guitar work on my album was exactly what I needed.'
-            },
-            {
-              _id: 'rev2',
-              user: { name: 'Priya Jayanetti', image: 'https://randomuser.me/api/portraits/women/68.jpg' },
-              rating: 5,
-              date: '2023-09-28',
-              text: 'Incredible talent and very professional. Rajiv helped transform my rough demo into a polished track.'
-            },
-            {
-              _id: 'rev3',
-              user: { name: 'Malik Gunasekera', image: 'https://randomuser.me/api/portraits/men/65.jpg' },
-              rating: 4,
-              date: '2023-08-10',
-              text: 'Great session musician who brings creative ideas to the table. Would definitely work with again.'
-            }
-          ]
-        };
-        
-        setArtist(mockArtist);
-        setLoading(false);
+        const { data } = await artistsAPI.getById(id);
+        setArtist(data.data);
       } catch (error) {
         console.error('Error fetching artist details:', error);
-        setLoading(false);
+        setArtist(null);
       }
+      setLoading(false);
     };
-    
     fetchArtistDetails();
   }, [id]);
   
@@ -235,7 +144,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
   }
 
   return (
-    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen">
+    <div className="pt-28 pb-20 bg-gradient-to-br from-primary-50 via-accent-100 to-light min-h-screen overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         {/* Back button */}
         <Link 
@@ -245,18 +154,17 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
           <FiArrowLeft className="mr-3 group-hover:-translate-x-1 transition-transform text-xl" /> 
           Back to Artists
         </Link>
-
         {/* Artist Header */}
-        <div className="mb-8">
+        <motion.div className="mb-8" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
           <div className="flex flex-col md:flex-row justify-between items-start gap-6">
             <div className="flex items-start gap-6">
-              <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-glass">
+              <motion.div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-glass" whileHover={{ scale: 1.05, rotate: 2 }}>
                 <img 
                   src={artist.user.avatar} 
                   alt={artist.user.name}
                   className="w-full h-full object-cover"
                 />
-              </div>
+              </motion.div>
               <div>
                 <h1 className="text-4xl md:text-5xl font-extrabold text-primary-700 mb-2">{artist.user.name}</h1>
                 <div className="flex items-center mb-3 text-dark/60">
@@ -285,6 +193,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                 }`}
                 onClick={toggleLike}
                 whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.08 }}
               >
                 <FiHeart className={isLiked ? 'fill-red-500' : ''} size={20} />
               </motion.button>
@@ -292,6 +201,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                 className="w-12 h-12 rounded-xl bg-white/80 flex items-center justify-center text-gray-500 shadow-glass border border-primary-100"
                 onClick={shareArtist}
                 whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.08 }}
               >
                 <FiShare2 size={20} />
               </motion.button>
@@ -305,17 +215,16 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
             <span className="mx-3 text-gray-400">•</span>
             <span className="text-dark/60 font-medium">{artist.reviewCount} reviews</span>
           </div>
-        </div>
-
+        </motion.div>
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Content */}
           <div className="lg:col-span-2">
             {/* Navigation Tabs */}
-            <div className="bg-glass/80 rounded-2xl p-1 mb-8 border border-primary-100">
+            <motion.div className="bg-glass/80 rounded-2xl p-1 mb-8 border border-primary-100" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
               <nav className="flex space-x-1">
                 {['overview', 'music', 'reviews', 'booking'].map((section) => (
-                  <button
+                  <motion.button
                     key={section}
                     onClick={() => handleSectionChange(section)}
                     className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all duration-200 capitalize ${
@@ -323,13 +232,13 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                         ? 'bg-primary-700 text-white shadow-glass'
                         : 'text-dark/70 hover:text-primary-700 hover:bg-white/50'
                     }`}
+                    whileHover={{ scale: 1.04, backgroundColor: '#f3f4f6' }}
                   >
                     {section}
-                  </button>
+                  </motion.button>
                 ))}
               </nav>
-            </div>
-
+            </motion.div>
             {/* Content sections */}
             <AnimatePresence mode="wait">
               {activeSection === 'overview' && (
@@ -428,6 +337,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                     reviewCount={artist.reviewCount}
                     entityType="artist"
                     entityId={artist._id}
+                    onReviewSubmit={refreshArtist}
                   />
                 </motion.div>
               )}
@@ -442,13 +352,45 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
                   className="lg:hidden bg-glass/80 rounded-3xl p-8 border border-primary-100"
                 >
                   <h2 className="text-3xl font-bold mb-6 text-primary-700">Book {artist.user.name}</h2>
-                  <BookingCalendar
-                    entityId={artist._id}
-                    entityType="artist"
-                    baseRate={artist.hourlyRate}
-                    availability={artist.availability}
-                    onComplete={() => {}}
-                  />
+                  <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    setBookingLoading(true);
+                    setBookingError('');
+                    try {
+                      const res = await bookingsAPI.create({
+                        artistId: artist._id,
+                        date: bookingDate,
+                        startTime: bookingStart,
+                        endTime: bookingEnd,
+                        duration: (parseInt(bookingEnd) - parseInt(bookingStart)) || 1,
+                        totalCost: artist.hourlyRate,
+                        services: [],
+                        notes: ''
+                      });
+                      await bookingsAPI.updatePayment(res.data.data._id, { paymentStatus: 'paid', paymentMethod: 'online', paymentId: 'MOCK123' });
+                      setBookingSuccess(true);
+                    } catch (err) {
+                      setBookingError('Booking failed. Please try again.');
+                    } finally {
+                      setBookingLoading(false);
+                    }
+                  }} className="space-y-4">
+                    <div>
+                      <label className="block font-semibold mb-1">Date</label>
+                      <input type="date" value={bookingDate} onChange={e => setBookingDate(e.target.value)} className="w-full p-2 border rounded" required />
+                    </div>
+                    <div>
+                      <label className="block font-semibold mb-1">Start Time</label>
+                      <input type="time" value={bookingStart} onChange={e => setBookingStart(e.target.value)} className="w-full p-2 border rounded" required />
+                    </div>
+                    <div>
+                      <label className="block font-semibold mb-1">End Time</label>
+                      <input type="time" value={bookingEnd} onChange={e => setBookingEnd(e.target.value)} className="w-full p-2 border rounded" required />
+                    </div>
+                    <button type="submit" className="btn btn-primary w-full" disabled={bookingLoading || bookingSuccess}>{bookingLoading ? 'Booking...' : bookingSuccess ? 'Booked!' : 'Book & Pay'}</button>
+                    {bookingError && <div className="text-red-600 mt-2">{bookingError}</div>}
+                    {bookingSuccess && <div className="text-green-600 mt-2">Booking successful! You can view it in your dashboard.</div>}
+                  </form>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -499,6 +441,7 @@ I'm skilled in guitar, keyboard, tabla, and flute, and can also arrange strings 
           </div>
         </div>
       </div>
+      <WaveDivider />
     </div>
   );
 };

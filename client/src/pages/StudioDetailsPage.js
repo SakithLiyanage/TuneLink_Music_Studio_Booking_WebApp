@@ -10,6 +10,9 @@ import {
 } from 'react-icons/fi';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { studiosAPI } from '../services/api';
+import { bookingsAPI } from '../services/api';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 
 const StudioDetailsPage = () => {
   const { id } = useParams();
@@ -22,105 +25,36 @@ const StudioDetailsPage = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [totalHours, setTotalHours] = useState(1);
   const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [bookingDate, setBookingDate] = useState('');
+  const [bookingStart, setBookingStart] = useState('');
+  const [bookingEnd, setBookingEnd] = useState('');
+  const [bookingError, setBookingError] = useState('');
+  const [bookingLoading, setBookingLoading] = useState(false);
   
+  // Add a function to refresh studio details
+  const refreshStudio = async () => {
+    setLoading(true);
+    try {
+      const { data } = await studiosAPI.getById(id);
+      setStudio(data.data);
+    } catch (error) {
+      setStudio(null);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     const fetchStudioData = async () => {
+      setLoading(true);
       try {
-        // In a real app, we would fetch from API
-        // For now, using dummy data
-        setTimeout(() => {
-          setStudio({
-            _id: id,
-            name: 'Celestial Sound Studios',
-            description: 'Celestial Sound Studios is a premium recording space in the heart of Colombo, featuring state-of-the-art equipment and expert sound engineers. Perfect for bands, solo artists, and commercial recording projects.',
-            location: { 
-              city: 'Colombo', 
-              address: '123 Galle Road, Colombo 03', 
-              coordinates: {
-                latitude: 6.9271,
-                longitude: 79.8612
-              }
-            },
-            pricePerHour: 3500,
-            images: [
-              { url: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=600', caption: 'Main Studio' },
-              { url: 'https://images.unsplash.com/photo-1598653222000-6b7b7a552625?q=80&w=600', caption: 'Control Room' },
-              { url: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=600', caption: 'Isolation Booth' },
-              { url: 'https://images.unsplash.com/photo-1508854710579-5cecc3a9ff17?q=80&w=600', caption: 'Lounge Area' }
-            ],
-            averageRating: 4.7,
-            ratingCount: 42,
-            facilities: [
-              'Professional Control Room', 
-              'Isolation Booth', 
-              'Drum Room',
-              'Mixing Console',
-              'Pro Tools HD',
-              'Vintage Microphones',
-              'Steinway Piano'
-            ],
-            amenities: [
-              'Lounge Area',
-              'Coffee Bar',
-              'Air Conditioning',
-              'Free WiFi',
-              'Parking'
-            ],
-            equipment: [
-              'Neumann U87 Microphone',
-              'SSL Mixing Console',
-              'Yamaha Drum Kit',
-              'Various Guitars and Amps',
-              'Roland Keyboards'
-            ],
-            availability: [
-              {
-                day: 'Monday',
-                slots: [
-                  { startTime: '10:00', endTime: '13:00', isAvailable: true },
-                  { startTime: '14:00', endTime: '18:00', isAvailable: true },
-                  { startTime: '19:00', endTime: '22:00', isAvailable: false }
-                ]
-              },
-              {
-                day: 'Tuesday',
-                slots: [
-                  { startTime: '10:00', endTime: '13:00', isAvailable: true },
-                  { startTime: '14:00', endTime: '18:00', isAvailable: true },
-                  { startTime: '19:00', endTime: '22:00', isAvailable: true }
-                ]
-              },
-              // Add more days here
-            ],
-            reviews: [
-              {
-                user: { name: 'Pradeep Silva', avatar: 'https://randomuser.me/api/portraits/men/32.jpg' },
-                rating: 5,
-                comment: 'Amazing studio with top-notch equipment. The sound engineer was incredibly helpful.',
-                date: '2023-09-15'
-              },
-              {
-                user: { name: 'Amali Fernando', avatar: 'https://randomuser.me/api/portraits/women/44.jpg' },
-                rating: 4,
-                comment: 'Great experience recording my EP here. Professional setup and good vibes.',
-                date: '2023-08-22'
-              }
-            ],
-            owner: {
-              name: 'Raj Perera',
-              avatar: 'https://randomuser.me/api/portraits/men/68.jpg',
-              responseRate: '95%',
-              responseTime: 'Within 2 hours'
-            }
-          });
-          setLoading(false);
-        }, 1000);
+        const { data } = await studiosAPI.getById(id);
+        setStudio(data.data);
       } catch (error) {
         console.error('Error fetching studio details:', error);
-        setLoading(false);
+        setStudio(null);
       }
+      setLoading(false);
     };
-
     fetchStudioData();
   }, [id]);
 
@@ -147,10 +81,7 @@ const StudioDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-28 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin mb-4"></div>
-        <p className="text-gray-600">Loading studio details...</p>
-      </div>
+      <LoadingSpinner text="Loading studio details..." />
     );
   }
 
@@ -263,83 +194,46 @@ const StudioDetailsPage = () => {
                 </div>
               </motion.div>
             ) : (
-              <>
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Select Date</label>
-                  <DatePicker
-                    selected={selectedDate}
-                    onChange={(date) => setSelectedDate(date)}
-                    minDate={new Date()}
-                    className="form-input w-full"
-                    dateFormat="MMMM d, yyyy"
-                  />
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setBookingLoading(true);
+                setBookingError('');
+                try {
+                  const res = await bookingsAPI.create({
+                    studioId: studio._id,
+                    date: bookingDate,
+                    startTime: bookingStart,
+                    endTime: bookingEnd,
+                    duration: (parseInt(bookingEnd) - parseInt(bookingStart)) || 1,
+                    totalCost: studio.pricePerHour,
+                    services: [],
+                    notes: ''
+                  });
+                  await bookingsAPI.updatePayment(res.data.data._id, { paymentStatus: 'paid', paymentMethod: 'online', paymentId: 'MOCK123' });
+                  setBookingSuccess(true);
+                } catch (err) {
+                  setBookingError('Booking failed. Please try again.');
+                } finally {
+                  setBookingLoading(false);
+                }
+              }} className="space-y-4">
+                <div>
+                  <label className="block font-semibold mb-1">Date</label>
+                  <input type="date" value={bookingDate} onChange={e => setBookingDate(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
-                
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Available Time Slots</label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {timeSlots.map((slot, index) => (
-                      <button
-                        key={index}
-                        className={`py-2 px-3 text-sm rounded-lg transition ${
-                          slot.isBooked 
-                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                            : selectedTimeSlot === index
-                              ? 'bg-primary-600 text-white'
-                              : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
-                        }`}
-                        onClick={() => !slot.isBooked && setSelectedTimeSlot(index)}
-                        disabled={slot.isBooked}
-                      >
-                        {slot.time}
-                      </button>
-                    ))}
-                  </div>
+                <div>
+                  <label className="block font-semibold mb-1">Start Time</label>
+                  <input type="time" value={bookingStart} onChange={e => setBookingStart(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
-                
-                <div className="mb-4">
-                  <label className="block text-gray-700 font-medium mb-2">Number of Hours</label>
-                  <div className="flex items-center">
-                    <button 
-                      className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center" 
-                      onClick={() => setTotalHours(prev => Math.max(1, prev - 1))}
-                    >
-                      -
-                    </button>
-                    <span className="mx-6 font-medium">{totalHours}</span>
-                    <button 
-                      className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center"
-                      onClick={() => setTotalHours(prev => Math.min(8, prev + 1))}
-                    >
-                      +
-                    </button>
-                  </div>
+                <div>
+                  <label className="block font-semibold mb-1">End Time</label>
+                  <input type="time" value={bookingEnd} onChange={e => setBookingEnd(e.target.value)} className="w-full p-2 border rounded" required />
                 </div>
-                
-                <div className="mt-6 space-y-3">
-                  <div className="flex justify-between text-gray-600">
-                    <span>Rs. {studio.pricePerHour} x {totalHours} hours</span>
-                    <span>Rs. {studio.pricePerHour * totalHours}</span>
-                  </div>
-                  <div className="flex justify-between text-gray-600">
-                    <span>Service fee</span>
-                    <span>Rs. {Math.round(studio.pricePerHour * totalHours * 0.05)}</span>
-                  </div>
-                  <div className="flex justify-between font-semibold pt-2 border-t">
-                    <span>Total</span>
-                    <span>Rs. {studio.pricePerHour * totalHours + Math.round(studio.pricePerHour * totalHours * 0.05)}</span>
-                  </div>
-                </div>
-              </>
+                <button type="submit" className="btn btn-primary w-full" disabled={bookingLoading || bookingSuccess}>{bookingLoading ? 'Booking...' : bookingSuccess ? 'Booked!' : 'Book & Pay'}</button>
+                {bookingError && <div className="text-red-600 mt-2">{bookingError}</div>}
+                {bookingSuccess && <div className="text-green-600 mt-2">Booking successful! You can view it in your dashboard.</div>}
+              </form>
             )}
-            
-            <button 
-              className={`w-full btn ${bookingSuccess ? 'btn-outline' : 'btn-primary'} mt-6`}
-              onClick={handleBooking}
-              disabled={selectedTimeSlot === null || bookingSuccess}
-            >
-              {bookingSuccess ? 'Booked Successfully' : 'Book Studio'}
-            </button>
             
             <div className="mt-4 text-center text-gray-500 text-sm">
               You won't be charged yet
@@ -406,7 +300,7 @@ const StudioDetailsPage = () => {
                     {studio.equipment.map((item, index) => (
                       <div key={index} className="flex items-center">
                         <FiCheckCircle className="text-primary-600 mr-2" />
-                        <span>{item}</span>
+                        <span>{item.name}</span>
                       </div>
                     ))}
                   </div>
@@ -415,25 +309,31 @@ const StudioDetailsPage = () => {
                 <div>
                   <h2 className="text-2xl font-semibold mb-4">About the Host</h2>
                   <div className="flex items-start">
-                    <img 
-                      src={studio.owner.avatar} 
-                      alt={studio.owner.name} 
-                      className="w-16 h-16 rounded-full object-cover mr-4"
-                    />
-                    <div>
-                      <h3 className="font-semibold text-lg">{studio.owner.name}</h3>
-                      <p className="text-gray-600">Studio Owner</p>
-                      <div className="flex items-center mt-2 space-x-4 text-sm">
-                        <span className="flex items-center">
-                          <FiThumbsUp className="mr-1 text-primary-600" />
-                          {studio.owner.responseRate} response rate
-                        </span>
-                        <span className="flex items-center">
-                          <FiClock className="mr-1 text-primary-600" />
-                          Typically responds {studio.owner.responseTime.toLowerCase()}
-                        </span>
-                      </div>
-                    </div>
+                    {studio.owner ? (
+                      <>
+                        <img 
+                          src={studio.owner.avatar} 
+                          alt={studio.owner.name} 
+                          className="w-16 h-16 rounded-full object-cover mr-4"
+                        />
+                        <div>
+                          <h3 className="font-semibold text-lg">{studio.owner.name}</h3>
+                          <p className="text-gray-600">Studio Owner</p>
+                          <div className="flex items-center mt-2 space-x-4 text-sm">
+                            <span className="flex items-center">
+                              <FiThumbsUp className="mr-1 text-primary-600" />
+                              {studio.owner.responseRate ? `${studio.owner.responseRate} response rate` : 'No response rate'}
+                            </span>
+                            <span className="flex items-center">
+                              <FiClock className="mr-1 text-primary-600" />
+                              {studio.owner.responseTime ? `Typically responds ${studio.owner.responseTime.toLowerCase()}` : 'No response time'}
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="text-gray-500">No host information available.</div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -454,7 +354,7 @@ const StudioDetailsPage = () => {
                         <div className="w-10 h-10 rounded-full bg-primary-100 text-primary-600 flex items-center justify-center mr-3">
                           <FiGrid />
                         </div>
-                        <span>{facility}</span>
+                        <span>{facility.name}</span>
                       </div>
                     ))}
                   </div>
